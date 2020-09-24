@@ -7,7 +7,7 @@ def generateSentence(sentenceString, speaker, outputPath):
     sentenceAudio = AudioSegment.silent(0)
     while i < len(sentenceString):
         vowel = sentenceString[i:i+2]
-        sentenceAudio = sentenceAudio + AudioSegment.from_mp3(folderPath+vowel+'.mp3')
+        sentenceAudio = sentenceAudio + AudioSegment.from_mp3(folderPath+vowel[0]+'/'+vowel[1]+'.mp3')
         i += 2
     sentenceAudio.export(
         outputPath,
