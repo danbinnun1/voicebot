@@ -3,8 +3,10 @@ import Tone
 import shutil
 import SoundParser
 
+progressPath = '../data/progress.txt'
+recordingsPath = '../data/recordings/'
 progressFileContent = ''
-with open('../data/progress.txt', 'r') as file:
+with open(progressPath, 'r') as file:
     progressFileContent = file.read()
 file.close()
 members = {}
@@ -14,9 +16,9 @@ for s in membersStrings[0:len(membersStrings)-1]:
 
 
 def signMember(name):
-    with open('../data/progress.txt', 'a+') as file:
+    with open(progressPath, 'a+') as file:
         file.write(name+','+Tone.firstTone()+'\n')
-    os.mkdir('../data/recordings/'+name)
+    os.mkdir(recordingsPath+name)
     file.close()
     members[name] = Tone.firstTone()
 
@@ -24,22 +26,24 @@ def signMember(name):
 def addRecordings(recording, memberName, tone):
     currentTone = members[memberName]
     tonesOrder = Tone.compareTonesOrder(tone, currentTone)
-    outputPath = '../data/recordings/'+memberName+'/'+tone
+    outputPath = recordingsPath+memberName+'/'+tone
     # this is a repair of existing tone
     if tonesOrder == -1:
         os.rmdir(outputPath)
         SoundParser.splitSound(recording, outputPath)
     elif tonesOrder == 0:
-        members['yosi'] = Tone.nextTone(members['yosi'])
+        members[memberName] = Tone.nextTone(members[memberName])
         rows = []
-        with open('../data/progress.txt', 'r') as file:
+        with open(progressPath, 'r') as file:
             rows = file.read().split('\n')
         file.close()
-        newRows=[]
+        newRows = []
         for row in rows:
             if row.split(',')[0] == memberName:
                 newRows.append(memberName+','+Tone.nextTone(row.split(',')[1]))
-        with open('../data/progress.txt', 'w') as file:
+            else:
+                newRows.append(row)
+        with open(progressPath, 'w') as file:
             for row in newRows[0:len(rows)-1]:
                 file.write(row+'\n')
         file.close()
