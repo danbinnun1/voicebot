@@ -1,4 +1,4 @@
-vowelsPath = '../data/vowels.txt'
+vowelsPath = '../settings/vowels.txt'
 
 vowels = []
 with open(vowelsPath, 'r') as vowelsFile:

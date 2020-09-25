@@ -1,4 +1,4 @@
-tonesPath = '../data/tones.txt'
+tonesPath = '../settings/tones.txt'
 
 tones = []
 with open(tonesPath, 'r') as tonesFile:
