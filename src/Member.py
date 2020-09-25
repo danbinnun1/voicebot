@@ -54,5 +54,6 @@ def addRecordings(recording, memberName, tone):
                 file.write(row+'\n')
         file.close()
     else:
+        os.remove(Data.temporalRecordingsFolderPath+'/'+recording)
         raise SoundException(
             SoundError.SENT_RECORDING_AFTER_PROGRESS)
