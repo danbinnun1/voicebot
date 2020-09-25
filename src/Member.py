@@ -2,11 +2,12 @@ import os
 import Tone
 import shutil
 import SoundParser
+import Data
+import SoundException
+import SoundError
 
-progressPath = '../data/progress.txt'
-recordingsPath = '../data/recordings/'
 progressFileContent = ''
-with open(progressPath, 'r') as file:
+with open(Data.progressFilePath, 'r') as file:
     progressFileContent = file.read()
 file.close()
 members = {}
@@ -16,17 +17,23 @@ for s in membersStrings[0:len(membersStrings)-1]:
 
 
 def signMember(name):
-    with open(progressPath, 'a+') as file:
+    if name in members.keys():
+        raise SoundException.SoundException(
+            SoundError.SoundError.USERNAME_TAKEN)
+    with open(Data.progressFilePath, 'a+') as file:
         file.write(name+','+Tone.firstTone()+'\n')
-    os.mkdir(recordingsPath+name)
+    os.mkdir(Data.recordingsFoledrPath+'/'+name)
     file.close()
     members[name] = Tone.firstTone()
 
 
 def addRecordings(recording, memberName, tone):
+    if not memberName in members.keys():
+        raise SoundException.SoundException(
+            SoundError.SoundError.USERNAME_DOES_NOT_EXIST)
     currentTone = members[memberName]
     tonesOrder = Tone.compareTonesOrder(tone, currentTone)
-    outputPath = recordingsPath+memberName+'/'+tone
+    outputPath = Data.recordingsFoledrPath+'/'+memberName+'/'+tone
     # this is a repair of existing tone
     if tonesOrder == -1:
         os.rmdir(outputPath)
@@ -34,7 +41,7 @@ def addRecordings(recording, memberName, tone):
     elif tonesOrder == 0:
         members[memberName] = Tone.nextTone(members[memberName])
         rows = []
-        with open(progressPath, 'r') as file:
+        with open(Data.progressFilePath, 'r') as file:
             rows = file.read().split('\n')
         file.close()
         newRows = []
@@ -43,10 +50,11 @@ def addRecordings(recording, memberName, tone):
                 newRows.append(memberName+','+Tone.nextTone(row.split(',')[1]))
             else:
                 newRows.append(row)
-        with open(progressPath, 'w') as file:
+        with open(Data.progressFilePath, 'w') as file:
             for row in newRows[0:len(rows)-1]:
                 file.write(row+'\n')
         file.close()
         SoundParser.splitSound(recording, outputPath)
     else:
-        raise Exception("sent recording after current")
+        raise SoundException.SoundException(
+            SoundError.SoundError.SENT_RECORDING_AFTER_PROGRESS)

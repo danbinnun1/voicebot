@@ -1,3 +1,6 @@
+import SoundError
+import SoundException
+
 tonesPath = '../settings/tones.txt'
 
 tones = []
@@ -25,6 +28,13 @@ def compareTonesOrder(tone1, tone2):
 
 
 def nextTone(tone):
-    for i in range(0, len(tones)):
+    for i in range(0, len(tones)-1):
         if (tones[i] == tone):
             return tones[i+1]
+    raise SoundException.SoundException(
+        SoundError.SoundError.TONE_DOES_NOT_EXIST)
+
+
+# checks weather the current progress means 'done'
+def finishedRegisteration(tone):
+    return tone == tones[-1]

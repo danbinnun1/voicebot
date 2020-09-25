@@ -3,6 +3,9 @@ from pydub import AudioSegment
 from pydub.silence import split_on_silence
 import Vowel
 import os
+import SoundError
+import SoundException
+
 
 def match_target_amplitude(aChunk, target_dBFS):
     ''' Normalize given audio chunk '''
@@ -25,7 +28,8 @@ def splitSound(filePath, outputPath):
         silence_thresh=-45
     )
     if len(Vowel.vowels) != len(chunks):
-        raise Exception("invalid audio input")
+        raise SoundException.SoundException(
+            SoundError.SoundError.INVALID_RECORDING_FILE)
     os.mkdir(outputPath)
     for i, chunk in enumerate(chunks):
         # Normalize the entire chunk.
@@ -37,4 +41,4 @@ def splitSound(filePath, outputPath):
             format="mp3"
         )
 
-#splitSound('g.mp3','.')
+# splitSound('g.mp3','.')
