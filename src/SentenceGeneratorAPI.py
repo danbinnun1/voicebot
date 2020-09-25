@@ -23,7 +23,7 @@ def sendSentenceRecording(speaker, sentence):
         return data
     except SoundException as e:
         print(e.errorCode)
-        return str(e.errorCode)
+        return str(int(e.errorCode))
 
 
 @app.route('/sign_member/<name>')
@@ -32,15 +32,13 @@ def signMember(name):
         Member.signMember(name)
         return ""
     except SoundException as e:
-        return str(e.errorCode)
+        return str(int(e.errorCode))
 
 
 @app.route('/upload_sound', methods=["POST", "GET"])
 def uploadRecording():
     print(request.url)
-
     if request.method == "POST":
-        print(777)
         if request.files:
             recording = request.files["mp3"]
             temporalName = uuid.uuid4().hex
@@ -51,7 +49,7 @@ def uploadRecording():
                     temporalName, request.form["name"], request.form["tone"])
                 return request.url
             except SoundException as error:
-                return str(error.errorCode)
+                return str(int(error.errorCode))
     return render_template('upload_sound.html')
 
 
