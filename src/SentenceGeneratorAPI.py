@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.route('/generateSentence/<speaker>/<sentence>')
 def sendSentenceRecording(speaker, sentence):
-    temporalName = uuid.uuid4().hex
+    temporalName = uuid.uuid4().hex+".mp3"
     temporalFile = Data.temporalRecordingsFolderPath+'/' + temporalName
 
     try:
