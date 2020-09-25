@@ -27,6 +27,7 @@ def splitSound(filePath, outputPath):
         # (You may want to adjust this parameter.)
         silence_thresh=-45
     )
+    os.remove(sourceFolder+filePath)
     if len(Vowel.vowels) != len(chunks):
         raise SoundException.SoundException(
             SoundError.SoundError.INVALID_RECORDING_FILE)
