@@ -5,15 +5,15 @@ import Vowel
 import os
 import SoundError
 import SoundException
-
+import shutil
 
 def match_target_amplitude(aChunk, target_dBFS):
     ''' Normalize given audio chunk '''
     change_in_dBFS = target_dBFS - aChunk.dBFS
     return aChunk.apply_gain(change_in_dBFS)
 
-
-sourceFolder = '../data/temporalRecordings/'
+import Data
+sourceFolder = Data.temporalRecordingsFolderPath+'/'
 
 
 def splitSound(filePath, outputPath):
@@ -30,7 +30,10 @@ def splitSound(filePath, outputPath):
     if len(Vowel.vowels) != len(chunks):
         raise SoundException.SoundException(
             SoundError.SoundError.INVALID_RECORDING_FILE)
-    os.mkdir(outputPath)
+    if os.path.exists(outputPath):
+        shutil.rmtree(outputPath)
+    os.makedirs(outputPath)
+    #os.mkdir(outputPath)
     for i, chunk in enumerate(chunks):
         # Normalize the entire chunk.
         normalized_chunk = match_target_amplitude(chunk, -20.0)
