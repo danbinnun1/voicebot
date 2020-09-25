@@ -3,8 +3,8 @@ import Tone
 import shutil
 import SoundParser
 import Data
-import SoundException
-import SoundError
+from SoundException import SoundException
+from SoundError import SoundError
 
 progressFileContent = ''
 with open(Data.progressFilePath, 'r') as file:
@@ -18,22 +18,21 @@ for s in membersStrings[0:len(membersStrings)-1]:
 
 def signMember(name):
     if name in members.keys():
-        raise SoundException.SoundException(
-            SoundError.SoundError.USERNAME_TAKEN)
+        raise SoundException(SoundError.USERNAME_TAKEN)
     with open(Data.progressFilePath, 'a+') as file:
         file.write(name+','+Tone.firstTone()+'\n')
-    os.mkdir(Data.recordingsFoledrPath+'/'+name)
+    os.mkdir(Data.recordingsFolderPath+'/'+name)
     file.close()
     members[name] = Tone.firstTone()
 
 
 def addRecordings(recording, memberName, tone):
     if not memberName in members.keys():
-        raise SoundException.SoundException(
+        raise SoundException(
             SoundError.SoundError.USERNAME_DOES_NOT_EXIST)
     currentTone = members[memberName]
     tonesOrder = Tone.compareTonesOrder(tone, currentTone)
-    outputPath = Data.recordingsFoledrPath+'/'+memberName+'/'+tone
+    outputPath = Data.recordingsFolderPath+'/'+memberName+'/'+tone
     # this is a repair of existing tone
     if tonesOrder == -1:
         os.rmdir(outputPath)
@@ -56,5 +55,5 @@ def addRecordings(recording, memberName, tone):
         file.close()
         SoundParser.splitSound(recording, outputPath)
     else:
-        raise SoundException.SoundException(
-            SoundError.SoundError.SENT_RECORDING_AFTER_PROGRESS)
+        raise SoundException(
+            SoundError.SENT_RECORDING_AFTER_PROGRESS)

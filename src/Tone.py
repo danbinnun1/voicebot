@@ -1,5 +1,5 @@
-import SoundError
-import SoundException
+from SoundError import SoundError
+from SoundException import SoundException
 
 tonesPath = '../settings/tones.txt'
 
