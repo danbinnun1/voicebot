@@ -41,14 +41,15 @@ def uploadRecording():
     print(request.url)
     if request.method == "POST":
         if request.files:
-            recording = request.files["mp3"]
-            temporalName = uuid.uuid4().hex
-            recording.save(os.path.join(
-                Data.temporalRecordingsFolderPath)+'/'+temporalName)
             try:
+                newTone=Tone.nextTone(request.form["tone"])
+                recording = request.files["mp3"]
+                temporalName = uuid.uuid4().hex
+                recording.save(os.path.join(
+                    Data.temporalRecordingsFolderPath)+'/'+temporalName)
                 Member.addRecordings(
                     temporalName, request.form["name"], request.form["tone"])
-                return Tone.nextTone(request.form["tone"])
+                return newTone
             except SoundException as error:
                 return str(int(error.errorCode))
     return render_template('upload_sound.html')
