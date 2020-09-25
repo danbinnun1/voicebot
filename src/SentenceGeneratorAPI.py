@@ -8,7 +8,7 @@ from SoundException import SoundException
 app = Flask(__name__)
 
 
-@app.route('/generateSentence/<speaker>/<sentence>')
+@app.route('/generate_sentence/<speaker>/<sentence>')
 def sendSentenceRecording(speaker, sentence):
     temporalName = uuid.uuid4().hex+".mp3"
     temporalFile = Data.temporalRecordingsFolderPath+'/' + temporalName
@@ -47,7 +47,7 @@ def uploadRecording():
             try:
                 Member.addRecordings(
                     temporalName, request.form["name"], request.form["tone"])
-                return request.url
+                return ""
             except SoundException as error:
                 return str(int(error.errorCode))
     return render_template('upload_sound.html')
