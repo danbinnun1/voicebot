@@ -5,6 +5,7 @@ import uuid
 import os
 import Member
 from SoundException import SoundException
+import Tone
 app = Flask(__name__)
 
 
@@ -47,7 +48,7 @@ def uploadRecording():
             try:
                 Member.addRecordings(
                     temporalName, request.form["name"], request.form["tone"])
-                return ""
+                return Tone.nextTone(request.form["tone"])
             except SoundException as error:
                 return str(int(error.errorCode))
     return render_template('upload_sound.html')
