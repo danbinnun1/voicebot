@@ -31,8 +31,8 @@ def nextTone(tone):
     for i in range(0, len(tones)-1):
         if (tones[i] == tone):
             return tones[i+1]
-    raise SoundException.SoundException(
-        SoundError.SoundError.TONE_DOES_NOT_EXIST)
+    raise SoundException(
+        SoundError.TONE_DOES_NOT_EXIST)
 
 
 # checks weather the current progress means 'done'
