@@ -35,9 +35,9 @@ def addRecordings(recording, memberName, tone):
     outputPath = Data.recordingsFolderPath+'/'+memberName+'/'+tone
     # this is a repair of existing tone
     if tonesOrder == -1:
-        os.rmdir(outputPath)
         SoundParser.splitSound(recording, outputPath)
     elif tonesOrder == 0:
+        SoundParser.splitSound(recording, outputPath)
         members[memberName] = Tone.nextTone(members[memberName])
         rows = []
         with open(Data.progressFilePath, 'r') as file:
@@ -53,7 +53,6 @@ def addRecordings(recording, memberName, tone):
             for row in newRows[0:len(rows)-1]:
                 file.write(row+'\n')
         file.close()
-        SoundParser.splitSound(recording, outputPath)
     else:
         raise SoundException(
             SoundError.SENT_RECORDING_AFTER_PROGRESS)
