@@ -29,7 +29,7 @@ def signMember(name):
 def addRecordings(recording, memberName, tone):
     if not memberName in members.keys():
         raise SoundException(
-            SoundError.SoundError.USERNAME_DOES_NOT_EXIST)
+            SoundError.USERNAME_DOES_NOT_EXIST)
     currentTone = members[memberName]
     tonesOrder = Tone.compareTonesOrder(tone, currentTone)
     outputPath = Data.recordingsFolderPath+'/'+memberName+'/'+tone

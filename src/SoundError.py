@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import IntEnum
 
 
-class SoundError(Enum):
+class SoundError(IntEnum):
     INVALID_RECORDING_FILE = 0
     SENT_RECORDING_AFTER_PROGRESS = 1
     INVALID_SENTENCE = 2
