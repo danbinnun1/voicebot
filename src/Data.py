@@ -19,7 +19,7 @@ def temporalFilePath(filename):
     return _temporalRecordingsFolderPath+'/'+filename
 
 def recordingPath(username, tone, vowel):
-    return recordingPath+'/'+username+'/'+tone+'/'+vowel
+    return _recordingsFolderPath+'/'+username+'/'+tone+'/'+vowel
 
 def toneRecordingPath(username, tone):
     return _recordingsFolderPath+'/'+username+'/'+tone
