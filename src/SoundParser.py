@@ -22,9 +22,7 @@ def splitSound(filePath, filename):
             silence_thresh=-45
         )
     except:
-        os.remove(Data.temporalFilePath(filePath))
         raise SoundException(SoundError.INVALID_RECORDING_FILE)
-    os.remove(Data.temporalFilePath(filePath))
     if len(Vowel.vowels) != len(chunks):
         raise SoundException(SoundError.INVALID_RECORDING_FILE)
     if os.path.exists(filename):
