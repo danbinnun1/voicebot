@@ -1,4 +1,5 @@
 import os
+import zipfile
 
 _dataFolderPath='../data'
 _recordingsFolderPath=_dataFolderPath+'/recordings'
@@ -21,7 +22,15 @@ def recordingPath(username, tone, vowel):
     return recordingPath+'/'+username+'/'+tone+'/'+vowel
 
 def toneRecordingPath(username, tone):
-    return recordingPath+'/'+username+'/'+tone
+    return _recordingsFolderPath+'/'+username+'/'+tone
     
+def zipUserTone(username, tone, filename):
+    with zipfile.ZipFile(temporalFilePath(filename), mode='w') as zipf:
+        len_dir_path = len(toneRecordingPath(username,tone))
+        for root, _, files in os.walk(toneRecordingPath(username,tone)):
+            for file in files:
+                file_path = os.path.join(root, file)
+                zipf.write(file_path, file_path[len_dir_path:])
+
 
 initializeData()
