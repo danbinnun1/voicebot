@@ -50,7 +50,17 @@ def uploadRecording():
                     Data.temporalFilePath(temporalName)))
                 Member.addRecordings(
                     temporalName, request.form["name"], request.form["tone"])
-                return newTone
+                userToneZipFileName=uuid.uuid4().hex+'.zip'
+                Data.zipUserTone(request.form["name"], request.form["tone"], userToneZipFileName)
+                data = send_file(Data.temporalFilePath(userToneZipFileName),
+                    mimetype = 'zip',
+                    attachment_filename= userToneZipFileName,
+                    as_attachment = True
+                )
+
+                # Delete the zip file if not needed
+                os.remove(Data.temporalFilePath(userToneZipFileName))
+                return data
             except SoundException as error:
                 return str(int(error.errorCode))
     return render_template('upload_sound.html')
