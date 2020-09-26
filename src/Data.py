@@ -6,7 +6,7 @@ _recordingsFolderPath=_dataFolderPath+'/recordings'
 _temporalRecordingsFolderPath=_dataFolderPath+'/temporalRecordings'
 _progressFilePath=_dataFolderPath+'/progress.txt'
 
-def initializeData():
+def _initializeData():
     if not os.path.isdir(_dataFolderPath):
         os.mkdir(_dataFolderPath)
         os.mkdir(_recordingsFolderPath)
@@ -33,4 +33,4 @@ def zipUserTone(username, tone, filename):
                 zipf.write(file_path, file_path[len_dir_path:])
 
 
-initializeData()
+_initializeData()
