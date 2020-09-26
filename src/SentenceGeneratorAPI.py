@@ -1,4 +1,5 @@
-from flask import Flask, send_from_directory, abort, render_template, request, redirect
+from flask import Flask, send_from_directory, abort, render_template, request, redirect, send_file
+import zipfile
 import Sentence
 import Data
 import uuid
@@ -12,14 +13,14 @@ app = Flask(__name__)
 @app.route('/generate_sentence/<speaker>/<sentence>')
 def sendSentenceRecording(speaker, sentence):
     temporalName = uuid.uuid4().hex+".mp3"
-    temporalFile = Data.temporalRecordingsFolderPath+'/' + temporalName
+    temporalFile = Data.temporalFilePath(temporalName)
 
     try:
         print(sentence)
         print(speaker)
         Sentence.generateSentence(sentence, speaker, temporalFile)
         data = send_from_directory(
-            Data.temporalRecordingsFolderPath, temporalName, as_attachment=True)
+            Data._temporalRecordingsFolderPath, temporalName, as_attachment=True)
         os.remove(temporalFile)
         return data
     except SoundException as e:
@@ -42,11 +43,11 @@ def uploadRecording():
     if request.method == "POST":
         if request.files:
             try:
-                newTone=Tone.nextTone(request.form["tone"])
+                newTone = Tone.nextTone(request.form["tone"])
                 recording = request.files["mp3"]
                 temporalName = uuid.uuid4().hex
                 recording.save(os.path.join(
-                    Data.temporalRecordingsFolderPath)+'/'+temporalName)
+                    Data.temporalFilePath(temporalName)))
                 Member.addRecordings(
                     temporalName, request.form["name"], request.form["tone"])
                 return newTone

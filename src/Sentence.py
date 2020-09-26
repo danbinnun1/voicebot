@@ -17,7 +17,6 @@ def generateSentence(sentenceString, speaker, outputPath):
     if len(sentenceString) % 2 == 1:
         raise SoundException(
             SoundError.INVALID_SENTENCE)
-    folderPath = Data.recordingsFolderPath + '/' + speaker+'/'
     i = 0
     sentenceAudio = AudioSegment.silent(0)
     while i < len(sentenceString):
@@ -28,7 +27,8 @@ def generateSentence(sentenceString, speaker, outputPath):
             raise SoundException(
                 SoundError.INVALID_SENTENCE)
         sentenceAudio = sentenceAudio + \
-            AudioSegment.from_mp3(folderPath+tone+'/'+vowel+'.mp3')
+            AudioSegment.from_mp3(Data.recordingPath(
+                speaker, tone, vowel)+'.mp3')
         i += 2
     sentenceAudio.export(
         outputPath,
