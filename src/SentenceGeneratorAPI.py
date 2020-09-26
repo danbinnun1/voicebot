@@ -42,26 +42,27 @@ def uploadRecording():
     print(request.url)
     if request.method == "POST":
         if request.files:
+            temporalName = uuid.uuid4().hex
             try:
-                newTone = Tone.nextTone(request.form["tone"])
                 recording = request.files["mp3"]
-                temporalName = uuid.uuid4().hex
                 recording.save(os.path.join(
                     Data.temporalFilePath(temporalName)))
+                newTone = Tone.nextTone(request.form["tone"])
                 Member.addRecordings(
                     temporalName, request.form["name"], request.form["tone"])
-                userToneZipFileName=uuid.uuid4().hex+'.zip'
-                Data.zipUserTone(request.form["name"], request.form["tone"], userToneZipFileName)
+                userToneZipFileName = uuid.uuid4().hex+'.zip'
+                Data.zipUserTone(
+                    request.form["name"], request.form["tone"], userToneZipFileName)
                 data = send_file(Data.temporalFilePath(userToneZipFileName),
-                    mimetype = 'zip',
-                    attachment_filename= userToneZipFileName,
-                    as_attachment = True
-                )
-
-                # Delete the zip file if not needed
+                                 mimetype='zip',
+                                 attachment_filename=userToneZipFileName,
+                                 as_attachment=True
+                                 )
                 os.remove(Data.temporalFilePath(userToneZipFileName))
+                os.remove(Data.temporalFilePath(temporalName))
                 return data
             except SoundException as error:
+                os.remove(Data.temporalFilePath(temporalName))
                 return str(int(error.errorCode))
     return render_template('upload_sound.html')
 
