@@ -11,11 +11,16 @@ error code:
     trying to add tone that does not exists = 5
     trying to get sentence from user who did not finished registaration = 6
 
-### 📌 Endpoints:
+## 📌 Endpoints:
 
-`/upload_sound`
-`/sign_member/<name>`
-`/generate_sentence/<speaker>/<sentence>`
+### `GET /sign_member/<name>`
+creates a new member with name `<name>`, note that member names are unique. 
+
+### `GET /generate_sentence/<speaker>/<sentence>`
+generates a sentence with speaker `<speaker>` and sentence `<sentence>` according to the [sentence format]: 
+
+### `GET /upload_sound`
+endpoint that has an html form that lets you upload a file, you must specify name of member and the sound to upload
 
 ### ✅ Sentence format:
 `(<tone><vowel>)(<tone><vowel>)(<tone><vowel>)....`
