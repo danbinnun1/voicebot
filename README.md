@@ -16,12 +16,15 @@
 
 ### `GET /sign_member/<name>`
 creates a new member with name `<name>`, note that member names are unique. 
+Example: `GET /sign_member/Amit`
 
 ### `GET /generate_sentence/<speaker>/<sentence>`
 generates a sentence with speaker `<speaker>` and sentence `<sentence>` according to the [sentence format](#-sentence-format)
+Example: `GET /generate_sentence/Amit/yes.`
 
 ### `GET /upload_sound`
 endpoint that has an html form that lets you upload a file, you must specify name of member and the sound to upload
+Example: `GET /upload_sound`
 
 ### ✅ Sentence format:
 `(<tone><vowel>)(<tone><vowel>)(<tone><vowel>)....`
