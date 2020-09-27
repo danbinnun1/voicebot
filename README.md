@@ -17,7 +17,7 @@ error code:
 creates a new member with name `<name>`, note that member names are unique. 
 
 ### `GET /generate_sentence/<speaker>/<sentence>`
-generates a sentence with speaker `<speaker>` and sentence `<sentence>` according to the [sentence format]: ./#-sentence-format
+generates a sentence with speaker `<speaker>` and sentence `<sentence>` according to the [sentence format](#-sentence-format)
 
 ### `GET /upload_sound`
 endpoint that has an html form that lets you upload a file, you must specify name of member and the sound to upload
