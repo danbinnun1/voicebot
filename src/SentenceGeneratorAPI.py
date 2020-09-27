@@ -4,6 +4,7 @@ import Sentence
 import Data
 import uuid
 import os
+import Vowel
 import Member
 from SoundException import SoundException
 import Tone
@@ -76,5 +77,9 @@ def getProgress(name):
     if (name in Member.members):
         return str(Member.members[name])
     return str(int(SoundError.USERNAME_DOES_NOT_EXIST))
+
+@app.route('/vowels')
+def getVowels():
+    return Vowel.vowels;
 
 app.run(debug=True)
