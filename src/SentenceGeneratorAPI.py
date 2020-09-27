@@ -66,5 +66,8 @@ def uploadRecording():
                 return str(int(error.errorCode))
     return render_template('upload_sound.html')
 
+@app.route('/members')
+def getMembers():
+    return Member.members
 
 app.run(debug=True)

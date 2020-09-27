@@ -11,7 +11,7 @@ def _initializeData():
         os.mkdir(_dataFolderPath)
         os.mkdir(_recordingsFolderPath)
         os.mkdir(_temporalRecordingsFolderPath)
-        progressFile=open(_progressFilePath, 'x')
+        progressFile=open(_progressFilePath, 'w')
         progressFile.close()
 
 
