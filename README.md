@@ -22,9 +22,17 @@ Example: `GET /sign_member/Amit`
 generates a sentence with speaker `<speaker>` and sentence `<sentence>` according to the [sentence format](#-sentence-format)
 Example: `GET /generate_sentence/Amit/yes.`
 
-### `GET /upload_sound`
+### `POST /upload_sound`
 endpoint that has an html form that lets you upload a file, you must specify name of member and the sound to upload
 Example: `GET /upload_sound`
+
+### `GET /members`
+return json format of all members and their progress
+Example: `GET /members`
+
+### `GET /members/<name>`
+return the progress of a certain member, if the member doen not exist it returns error code
+Example: `GET /members/heni`
 
 ### ✅ Sentence format:
 `(<tone><vowel>)(<tone><vowel>)(<tone><vowel>)....`
