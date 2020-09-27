@@ -1,15 +1,16 @@
 # Voicebot 🔊
-### a bot that lets people make their own voicebots
+## a bot that lets people make their own voicebots
 
-error code:
-    the recording file is invalid, it nedds to be mp3 and its content should
-    be syllables padded by 1 second of silence. the syllables amount must be the same as the amount of vowels = 0
-    the recording tone is after the current user progress = 1
-    the sentence is invalid = 2
-    trying to add username the already exists = 3
-    try to access user that does not exist = 4
-    trying to add tone that does not exists = 5
-    trying to get sentence from user who did not finished registaration = 6
+### error codes
+| Error number | Description |
+| :----------: | :---------- |
+| 0 | the recording file is invalid, it nedds to be mp3 and its content should be syllables padded by 1 second of silence. the syllables amount must be the same as the amount of vowels |
+| 1 | the recording tone is after the current user progress |
+| 2 | the sentence is invalid |
+| 3 | trying to add username the already exists |
+| 4 | try to access user that does not exist |
+| 5 | trying to add tone that does not exists |
+| 6 | trying to get sentence from user who did not finished registaration |
 
 ## 📌 Endpoints:
 
