@@ -15,15 +15,17 @@ def match_target_amplitude(aChunk, target_dBFS):
 
 def splitSound(filePath, filename):
     try:
-        audio = AudioSegment.from_mp3(Data.temporalFilePath(filePath))
+        audio = AudioSegment.from_file(Data.temporalFilePath(filePath))
         chunks = split_on_silence(
             match_target_amplitude(audio,-16),
             min_silence_len=500,
             silence_thresh=-25
         )
-    except:
+    except Exception as e:
+        print(e)
         raise SoundException(SoundError.INVALID_RECORDING_FILE)
     if len(Vowel.vowels) != len(chunks):
+        print(len(Vowel.vowels), len(chunks))
         raise SoundException(SoundError.INVALID_RECORDING_FILE)
     if os.path.exists(filename):
         shutil.rmtree(filename)
