@@ -11,13 +11,13 @@ error code:
     trying to add tone that does not exists = 5
     trying to get sentence from user who did not finished registaration = 6
 
-### Endpoints:
+### 📌 Endpoints:
 
 `/upload_sound`
 `/sign_member/<name>`
 `/generate_sentence/<speaker>/<sentence>`
 
-###sentence format:
+### ✅ Sentence format:
 `(<tone><vowel>)(<tone><vowel>)(<tone><vowel>)....`
 example:
 `kakipipitusik.bul.bul.`
