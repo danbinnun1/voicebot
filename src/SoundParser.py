@@ -17,9 +17,9 @@ def splitSound(filePath, filename):
     try:
         audio = AudioSegment.from_mp3(Data.temporalFilePath(filePath))
         chunks = split_on_silence(
-            audio,
+            match_target_amplitude(audio,-16),
             min_silence_len=500,
-            silence_thresh=-45
+            silence_thresh=-25
         )
     except:
         raise SoundException(SoundError.INVALID_RECORDING_FILE)
