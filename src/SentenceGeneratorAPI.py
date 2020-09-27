@@ -70,4 +70,11 @@ def uploadRecording():
 def members():
     return Member.members
 
+from SoundError import SoundError
+@app.route('/members/<name>')
+def getProgress(name):
+    if (name in Member.members):
+        return str(Member.members[name])
+    return str(int(SoundError.USERNAME_DOES_NOT_EXIST))
+
 app.run(debug=True)
