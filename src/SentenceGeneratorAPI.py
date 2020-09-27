@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory, abort, render_template, request, redirect, send_file
+from flask import Flask, jsonify, send_from_directory, abort, render_template, request, redirect, send_file
 import zipfile
 import Sentence
 import Data
@@ -80,6 +80,6 @@ def getProgress(name):
 
 @app.route('/vowels')
 def getVowels():
-    return Vowel.vowels;
+    return jsonify({'response': Vowel.vowels});
 
 app.run(debug=True)
