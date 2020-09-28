@@ -48,7 +48,7 @@ def uploadRecording():
                 recording = request.files["mp3"]
                 recording.save(os.path.join(
                     Data.temporalFilePath(temporalName)))
-                newTone = Tone.nextTone(request.form["tone"])
+                # newTone = Tone.nextTone(request.form["tone"])
                 Member.addRecordings(
                     temporalName, request.form["name"], request.form["tone"])
                 userToneZipFileName = uuid.uuid4().hex+'.zip'
@@ -65,6 +65,9 @@ def uploadRecording():
             except SoundException as error:
                 os.remove(Data.temporalFilePath(temporalName))
                 return str(int(error.errorCode))
+            except Exception as error:
+                return str(error);
+
     return render_template('upload_sound.html')
 
 @app.route('/members')
@@ -80,6 +83,6 @@ def getProgress(name):
 
 @app.route('/vowels')
 def getVowels():
-    return jsonify({'response': Vowel.vowels});
+    return jsonify({'response': Vowel.vowels})
 
 app.run(debug=True)
