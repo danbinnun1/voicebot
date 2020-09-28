@@ -1,0 +1,18 @@
+version: 2.1
+
+orbs:
+  python: circleci/python@0.2.1
+
+jobs:
+  build-and-test:
+    executor: python/default
+    steps:
+      - checkout
+      - run:
+          command: pip install --user flask
+          name: install python dependencies
+
+workflows:
+  main:
+    jobs:
+      - build-and-test
