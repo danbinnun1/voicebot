@@ -1,1 +1,1 @@
-a,b,#
+a,b,g,d,h,v,z,1,t,y,k,l,m,n,s,p,2,r,3,w,j,f,#
