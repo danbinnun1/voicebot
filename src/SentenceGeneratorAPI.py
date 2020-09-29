@@ -21,7 +21,7 @@ def sendSentenceRecording(speaker, sentence):
         print(speaker)
         Sentence.generateSentence(sentence, speaker, temporalFile)
         data = send_from_directory(
-            Data._temporalRecordingsFolderPath, temporalName, as_attachment=True)
+            Data.temporalRecordingsFolderPath, temporalName, as_attachment=True)
         os.remove(temporalFile)
         return data
     except SoundException as e:
