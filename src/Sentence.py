@@ -23,12 +23,15 @@ def generateSentence(sentenceString, speaker, outputPath):
         syllable = sentenceString[i:i+2]
         tone = syllable[0]
         vowel = syllable[1]
-        if not tone in Tone.tones or not vowel in Vowel.vowels:
-            raise SoundException(
-                SoundError.INVALID_SENTENCE)
-        sentenceAudio = sentenceAudio + \
-            AudioSegment.from_mp3(Data.recordingPath(
-                speaker, tone, vowel)+'.mp3')
+        if tone == ' ' and vowel == ' ':
+            sentenceAudio = sentenceAudio+AudioSegment.silent(300)
+        elif not tone in Tone.tones or not vowel in Vowel.vowels:
+                raise SoundException(
+                    SoundError.INVALID_SENTENCE)
+        else:
+            sentenceAudio = sentenceAudio + \
+                AudioSegment.from_mp3(Data.recordingPath(
+                    speaker, tone, vowel)+'.mp3')
         i += 2
     sentenceAudio.export(
         outputPath,
