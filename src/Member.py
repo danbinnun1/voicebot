@@ -21,7 +21,7 @@ def signMember(name):
         raise SoundException(SoundError.USERNAME_TAKEN)
     with open(Data.progressFilePath, 'a+') as file:
         file.write(name+','+Tone.firstTone()+'\n')
-    os.mkdir(Data.recordingsFolderPath+'/'+name)
+    os.mkdir(os.path.join(Data.recordingsFolderPath,name))
     file.close()
     members[name] = Tone.firstTone()
 
@@ -32,7 +32,7 @@ def addRecordings(recording, memberName, tone):
             SoundError.USERNAME_DOES_NOT_EXIST)
     currentTone = members[memberName]
     tonesOrder = Tone.compareTonesOrder(tone, currentTone)
-    outputPath = Data.toneRecordingPath(memberName, tone)
+    outputPath = os.path.join(Data.recordingsFolderPath,memberName,tone)
     # this is a repair of existing tone
     if tonesOrder == -1:
         SoundParser.splitSound(recording, outputPath)

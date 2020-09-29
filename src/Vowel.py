@@ -1,6 +1,6 @@
-vowelsPath = '../settings/vowels.txt'
+_vowelsPath = '../settings/vowels.txt'
 
 vowels = []
-with open(vowelsPath, 'r') as vowelsFile:
+with open(_vowelsPath, 'r') as vowelsFile:
     vowels = vowelsFile.read().split(',')
 vowelsFile.close()

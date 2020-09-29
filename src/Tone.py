@@ -1,10 +1,10 @@
 from SoundError import SoundError
 from SoundException import SoundException
 
-tonesPath = '../settings/tones.txt'
+_tonesPath = '../settings/tones.txt'
 
 tones = []
-with open(tonesPath, 'r') as tonesFile:
+with open(_tonesPath, 'r') as tonesFile:
     tones = tonesFile.read().split(',')
 tonesFile.close()
 

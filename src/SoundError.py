@@ -1,6 +1,5 @@
 from enum import IntEnum
 
-
 class SoundError(IntEnum):
     INVALID_RECORDING_FILE = 0
     SENT_RECORDING_AFTER_PROGRESS = 1

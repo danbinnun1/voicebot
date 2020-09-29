@@ -1,3 +1,4 @@
+from SoundError import SoundError
 from flask import Flask, jsonify, send_from_directory, abort, render_template, request, redirect, send_file
 import zipfile
 import Sentence
@@ -14,15 +15,15 @@ app = Flask(__name__)
 @app.route('/generate_sentence/<speaker>/<sentence>')
 def sendSentenceRecording(speaker, sentence):
     temporalName = uuid.uuid4().hex+".mp3"
-    temporalFile = Data.temporalFilePath(temporalName)
 
     try:
         print(sentence)
         print(speaker)
-        Sentence.generateSentence(sentence, speaker, temporalFile)
+        Sentence.generateSentence(sentence, speaker, os.path.join(
+            Data.temporalRecordingsFolderPath, temporalName))
         data = send_from_directory(
             Data.temporalRecordingsFolderPath, temporalName, as_attachment=True)
-        os.remove(temporalFile)
+        os.remove(os.path.join(Data.temporalRecordingsFolderPath, temporalName))
         return data
     except SoundException as e:
         print(e.errorCode)
@@ -47,42 +48,47 @@ def uploadRecording():
             try:
                 recording = request.files["mp3"]
                 recording.save(os.path.join(
-                    Data.temporalFilePath(temporalName)))
-                # newTone = Tone.nextTone(request.form["tone"])
+                    Data.temporalRecordingsFolderPath, temporalName))
                 Member.addRecordings(
-                    temporalName, request.form["name"], request.form["tone"])
+                    os.path.join(Data.temporalRecordingsFolderPath, temporalName), request.form["name"], request.form["tone"])
                 userToneZipFileName = uuid.uuid4().hex+'.zip'
                 Data.zipUserTone(
-                    request.form["name"], request.form["tone"], userToneZipFileName)
-                data = send_file(Data.temporalFilePath(userToneZipFileName),
-                                 mimetype='zip',
-                                 attachment_filename=userToneZipFileName,
-                                 as_attachment=True
-                                 )
-                os.remove(Data.temporalFilePath(userToneZipFileName))
-                os.remove(Data.temporalFilePath(temporalName))
+                    request.form["name"], request.form["tone"], os.path.join(Data.temporalRecordingsFolderPath, userToneZipFileName))
+                data = send_file(
+                    os.path.join(Data.temporalRecordingsFolderPath,
+                                 userToneZipFileName),
+                    mimetype='zip',
+                    attachment_filename=userToneZipFileName,
+                    as_attachment=True
+                )
+                os.remove(os.path.join(
+                    Data.temporalRecordingsFolderPath, userToneZipFileName))
+                os.remove(os.path.join(
+                    Data.temporalRecordingsFolderPath, temporalName))
                 return data
             except SoundException as error:
-                os.remove(Data.temporalFilePath(temporalName))
+                os.remove(os.path.join(
+                    Data.temporalRecordingsFolderPath, temporalName))
                 return str(int(error.errorCode))
-            except Exception as error:
-                return str(error);
 
     return render_template('upload_sound.html')
+
 
 @app.route('/members')
 def members():
     return Member.members
 
-from SoundError import SoundError
+
 @app.route('/members/<name>')
 def getProgress(name):
     if (name in Member.members):
         return str(Member.members[name])
     return str(int(SoundError.USERNAME_DOES_NOT_EXIST))
 
+
 @app.route('/vowels')
 def getVowels():
     return jsonify({'response': Vowel.vowels})
+
 
 app.run(debug=True)
