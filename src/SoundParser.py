@@ -17,9 +17,9 @@ def splitSound(filePath, filename):
     try:
         audio = AudioSegment.from_file(Data.temporalFilePath(filePath))
         chunks = split_on_silence(
-            match_target_amplitude(audio,-16),
+            audio,
             min_silence_len=500,
-            silence_thresh=-25
+            silence_thresh=-30
         )
     except Exception as e:
         print(e)
@@ -32,7 +32,8 @@ def splitSound(filePath, filename):
     os.makedirs(filename)
     for i, chunk in enumerate(chunks):
         normalized_chunk = match_target_amplitude(chunk, -20.0)
-        normalized_chunk.export(
+        trimmed_chunk=normalized_chunk[0:300]
+        trimmed_chunk.export(
             filename+'/'+Vowel.vowels[i]+'.mp3',
             bitrate="192k",
             format="mp3"
