@@ -9,6 +9,8 @@ import os
 import BL.Member as Member
 from BL.SoundException import SoundException
 import BL.Tone
+import BL.Data
+BL.Data.initializeData()
 app = Flask(__name__)
 
 

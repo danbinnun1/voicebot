@@ -6,7 +6,6 @@ def initializeData():
     if not os.path.isdir(config.dataFolderPath):
         os.mkdir(config.dataFolderPath)
         os.mkdir(config.recordingsFolderPath)
-        os.mkdir(config.temporalRecordingsFolderPath)
         conn = sqlite3.connect(config.progressFilePath)
         c = conn.cursor()
         c.execute('''
