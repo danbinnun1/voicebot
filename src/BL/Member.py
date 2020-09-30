@@ -62,9 +62,9 @@ class Member:
 def getMemberBynameAndPassword(username, password):
     if not DALMember.memberExists(username, password):
         raise SoundException(SoundError.WRONG_USERNAME_OR_PASSWORD)
-    return Member(username, password, DALMember.getMemberProgress(username))
+    return Member(username, password, Tone(DALMember.getMemberProgress(username)))
 
 def getMemberByusername(username):
     if not DALMember.usernameExists(username):
         raise SoundException(SoundError.USERNAME_DOES_NOT_EXIST)
-    return Member(username, DALMember.getMemberProgress(username))
+    return Member(username, Tone(DALMember.getMemberProgress(username)))
