@@ -11,6 +11,7 @@ jobs:
       - run:
           command: pip install --user flask
           name: install python dependencies
+      - run: pytest
 
 workflows:
   main:
