@@ -56,6 +56,6 @@ def getMemberProgress(username):
     c = conn.cursor()
     searchParameters = (username,)
     searchResult = c.execute('''
-        SELECT tone FROM members WHERE name=?
+        SELECT progress FROM members WHERE name=?
         ''', searchParameters).fetchone()
     return searchResult[1]

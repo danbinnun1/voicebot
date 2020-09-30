@@ -12,7 +12,7 @@ import BL.Tone
 app = Flask(__name__)
 
 
-@app.route('/generate_sentence/<speaker>/<sentence>')
+@app.route('/generate_sentence/<speakerUsername>/<sentence>')
 def sendSentenceRecording(speakerUsername, sentence):
     temporalName = uuid.uuid4().hex+".mp3"
 
