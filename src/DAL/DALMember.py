@@ -1,6 +1,7 @@
 import sqlite3
 import os
 import DAL.DALconfig as config
+import zipfile
 
 def insertMember(name, password, tone):
     conn = sqlite3.connect(config.progressFilePath)
@@ -40,3 +41,12 @@ def memberExists(username, password):
         SELECT * FROM members WHERE name=? AND password=?
         ''', searchParameters).fetchone()
     return searchResult != None
+
+def zipUserTone(username, tone, outputPath):
+    with zipfile.ZipFile(outputPath, mode='w') as zipf:
+        dir_path = os.path.join(config.recordingsFolderPath, username, tone)
+        len_dir_path = len(dir_path)
+        for root, _, files in os.walk(dir_path):
+            for file in files:
+                file_path = os.path.join(root, file)
+                zipf.write(file_path, file_path[len_dir_path:])
