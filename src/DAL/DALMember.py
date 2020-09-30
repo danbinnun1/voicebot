@@ -21,7 +21,7 @@ def usernameExists(username):
     searchResult = c.execute('''
         SELECT * FROM members WHERE name=?
         ''', searchParameters).fetchone()
-    return searchResult == None
+    return searchResult != None
 
 def updateUserProgress(newTone, username):
     conn = sqlite3.connect(config.progressFilePath)
