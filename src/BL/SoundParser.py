@@ -23,7 +23,7 @@ def splitSound(audio):
     if len(vowels) != len(chunks):
         print(len(vowels), len(chunks))
         raise SoundException(SoundError.INVALID_RECORDING_FILE)
-    for chunk in chunks:
+    for i, chunk in enumerate(chunks):
         chunk = _match_target_amplitude(chunk, -20.0)
-        chunk = chunk[0:300]
+        chunks[i] = chunk[0:300]
     return chunks
