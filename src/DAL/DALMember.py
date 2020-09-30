@@ -28,7 +28,7 @@ def updateUserProgress(newTone, username):
     c = conn.cursor()
     values = (newTone, username)
     c.execute('''
-        UPDATE members SET tone=? WHERE name=?
+        UPDATE members SET progress=? WHERE name=?
         ''', values)
     conn.commit()
     conn.close()
