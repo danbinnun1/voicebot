@@ -58,4 +58,4 @@ def getMemberProgress(username):
     searchResult = c.execute('''
         SELECT progress FROM members WHERE name=?
         ''', searchParameters).fetchone()
-    return searchResult[1]
+    return searchResult[0]
