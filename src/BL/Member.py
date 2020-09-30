@@ -70,3 +70,10 @@ def getMemberByusername(username):
     if not DALMember.usernameExists(username):
         raise SoundException(SoundError.USERNAME_DOES_NOT_EXIST)
     return Member(username, Tone(DALMember.getMemberProgress(username)))
+
+def getAllMembers():
+    rows=DALMember.getAllMembers()
+    members = {}
+    for row in rows:
+        members[row[0]] = row[1]
+    return members

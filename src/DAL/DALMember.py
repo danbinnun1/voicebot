@@ -3,6 +3,7 @@ import os
 import DAL.DALconfig as config
 import zipfile
 
+
 def insertMember(name, password, tone):
     conn = sqlite3.connect(config.progressFilePath)
     c = conn.cursor()
@@ -14,6 +15,7 @@ def insertMember(name, password, tone):
     conn.close()
     os.mkdir(os.path.join(config.recordingsFolderPath, name))
 
+
 def usernameExists(username):
     conn = sqlite3.connect(config.progressFilePath)
     c = conn.cursor()
@@ -22,6 +24,7 @@ def usernameExists(username):
         SELECT * FROM members WHERE name=?
         ''', searchParameters).fetchone()
     return searchResult != None
+
 
 def updateUserProgress(newTone, username):
     conn = sqlite3.connect(config.progressFilePath)
@@ -33,6 +36,7 @@ def updateUserProgress(newTone, username):
     conn.commit()
     conn.close()
 
+
 def memberExists(username, password):
     conn = sqlite3.connect(config.progressFilePath)
     c = conn.cursor()
@@ -41,6 +45,7 @@ def memberExists(username, password):
         SELECT * FROM members WHERE name=? AND password=?
         ''', searchParameters).fetchone()
     return searchResult != None
+
 
 def zipUserTone(username, tone, outputPath):
     with zipfile.ZipFile(outputPath, mode='w') as zipf:
@@ -51,6 +56,7 @@ def zipUserTone(username, tone, outputPath):
                 file_path = os.path.join(root, file)
                 zipf.write(file_path, file_path[len_dir_path:])
 
+
 def getMemberProgress(username):
     conn = sqlite3.connect(config.progressFilePath)
     c = conn.cursor()
@@ -59,3 +65,12 @@ def getMemberProgress(username):
         SELECT progress FROM members WHERE name=?
         ''', searchParameters).fetchone()
     return searchResult[0]
+
+
+def getAllMembers():
+    conn = sqlite3.connect(config.progressFilePath)
+    c = conn.cursor()
+    searchResult = c.execute('''
+        SELECT * FROM members
+        ''').fetchall()
+    return searchResult
