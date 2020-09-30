@@ -1,4 +1,4 @@
-import DAL.DALconfig as config
+import src.DAL.DALconfig as config
 import os
 from pydub import AudioSegment
 

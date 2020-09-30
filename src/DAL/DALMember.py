@@ -1,6 +1,6 @@
 import sqlite3
 import os
-import DAL.DALconfig as config
+import src.DAL.DALconfig as config
 import zipfile
 
 
