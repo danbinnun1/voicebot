@@ -12,6 +12,7 @@ jobs:
           command: pip install --user flask
           name: install python dependencies
       - run: python3 -m pip install pytest-testconfig
+      - run: pip install validate
       - run: pytest
 
 workflows:
