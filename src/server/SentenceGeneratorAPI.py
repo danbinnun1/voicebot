@@ -1,43 +1,39 @@
-import sys
-sys.path.append('../')
-
-from BL.SoundError import SoundError
 from flask import Flask, jsonify, send_from_directory, abort, render_template, request, redirect, send_file
-import zipfile
 import uuid
 import os
-import BL.Member as Member
+import sys
+sys.path.append('../')
+from BL.SoundError import SoundError
+from BL.Member import Member
 from BL.SoundException import SoundException
-import BL.Tone
+from BL.Tone import Tone
 import BL.Data
+
 BL.Data.initializeData()
 app = Flask(__name__)
 
-
 @app.route('/generate_sentence/<speakerUsername>/<sentence>')
 def sendSentenceRecording(speakerUsername, sentence):
-    temporalName = uuid.uuid4().hex+".mp3"
-
     try:
-        print(sentence)
-        print(speakerUsername)
+        temporalName = uuid.uuid4().hex+".mp3"
         speaker=Member.getMemberByusername(speakerUsername)
         sentenceAudio=speaker.generateSentence(sentence)
         filename=uuid.uuid4().hex
         data = send_file(sentenceAudio.raw_data, 'audio/mp3', as_attachment=True,attachment_filename=filename)
         return data
     except SoundException as e:
-        print(e.errorCode)
         return str(int(e.errorCode))
 
-
-@app.route('/sign_member/<name>')
-def signMember(name):
-    try:
-        Member.signMember(name)
-        return ""
-    except SoundException as e:
-        return str(int(e.errorCode))
+@app.route('/sign_up', methods=["POST", "GET"])
+def signMember():
+    if request.method=="POST":
+        try:
+            newMember=Member(request.form["username"], Tone.first())
+            newMember.save(request.form["password"])
+            return ""
+        except SoundException as e:
+            return str(int(e.errorCode))
+    return render_template("sign_member.html")
 
 
 @app.route('/upload_sound', methods=["POST", "GET"])

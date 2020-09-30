@@ -27,6 +27,8 @@ class Member:
                 DALRecording.uploadVowelRecording(vowelRecording,self.name, tone, vowels[i])
         elif tone == self.tone:
             toneVowels = splitSound(recording)
+            for i, vowelRecording in enumerate(toneVowels):
+                DALRecording.uploadVowelRecording(vowelRecording,self.name, tone, vowels[i])
             DALMember.updateUserProgress(self.tone.next(), self.name)
         else:
             raise SoundException(
