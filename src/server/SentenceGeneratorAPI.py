@@ -5,6 +5,7 @@ import sys
 sys.path.append('../')
 from BL.SoundError import SoundError
 from BL.Member import Member
+import BL.Member
 from BL.SoundException import SoundException
 from BL.Tone import Tone
 import BL.Data
@@ -16,7 +17,7 @@ app = Flask(__name__)
 def sendSentenceRecording(speakerUsername, sentence):
     try:
         temporalName = uuid.uuid4().hex+".mp3"
-        speaker=Member.getMemberByusername(speakerUsername)
+        speaker=BL.Member.getMemberByusername(speakerUsername)
         sentenceAudio=speaker.generateSentence(sentence)
         filename=uuid.uuid4().hex
         data = send_file(sentenceAudio.raw_data, 'audio/mp3', as_attachment=True,attachment_filename=filename)
