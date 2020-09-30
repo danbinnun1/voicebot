@@ -2,7 +2,7 @@ import os
 import zipfile
 import sqlite3
 
-_dataFolderPath = '../data'
+_dataFolderPath = '/home/danbinnun1/voicebot/data'
 recordingsFolderPath = os.path.join(_dataFolderPath, 'recordings')
 temporalRecordingsFolderPath = os.path.join(
     _dataFolderPath, 'temporalRecordings')
@@ -17,7 +17,7 @@ def _initializeData():
         conn = sqlite3.connect(progressFilePath)
         c = conn.cursor()
         c.execute('''
-        CREATE TABLE members (name text, progress text, password text);
+        CREATE TABLE members (name text PRIMARY KEY, progress text, password text);
         ''')
         conn.commit()
         conn.close()

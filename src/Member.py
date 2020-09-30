@@ -1,58 +1,68 @@
-import os
-import Tone
-import shutil
-import SoundParser
-import Data
-from SoundException import SoundException
+from Data import progressFilePath
+import sqlite3
 from SoundError import SoundError
-
-progressFileContent = ''
-with open(Data.progressFilePath, 'r') as file:
-    progressFileContent = file.read()
-file.close()
-members = {}
-membersStrings = progressFileContent.split('\n')
-for s in membersStrings[0:len(membersStrings)-1]:
-    members[s.split(',')[0]] = s.split(',')[1]
+from SoundException import SoundException
+from SoundParser import splitSound
+from Tone import Tone
+import Data
+import os
 
 
-def signMember(name):
-    if name in members.keys():
-        raise SoundException(SoundError.USERNAME_TAKEN)
-    with open(Data.progressFilePath, 'a+') as file:
-        file.write(name+','+Tone.firstTone()+'\n')
-    os.mkdir(os.path.join(Data.recordingsFolderPath,name))
-    file.close()
-    members[name] = Tone.firstTone()
+class Member:
+    def __init__(self, name, password, tone):
+        self.name = name
+        self.__password = password
+        self.tone = tone
+
+    def save(self):
+        conn = sqlite3.connect(progressFilePath)
+        c = conn.cursor()
+        searchParameters = (self.name,)
+        searchResult = c.execute('''
+        SELECT * FROM members WHERE name=?
+        ''', searchParameters).fetchone()
+        if searchResult != None:
+            raise SoundException(SoundError.USERNAME_TAKEN)
+        values = (self.name, self.__password, self.tone.letter,)
+        c.execute('''
+        INSERT INTO members (name, password, progress) VALUES (?,?,?)
+        ''', values)
+        conn.commit()
+        conn.close()
+
+    def uploadSound(self, filepath, tone):
+        # this is a repair of existing tone
+        if tone < self.tone:
+            SoundParser.splitSound(filepath, os.path.join(
+                Data.recordingsFolderPath, self.name, tone))
+        elif tone == self.tone:
+            SoundParser.splitSound(filepath, os.path.join(
+                Data.recordingsFolderPath, self.name, tone))
+            self.tone = self.tone.next()
+            conn = sqlite3.connect(progressFilePath)
+            c = conn.cursor()
+            values = (self.tone.letter, self.name, self.__password)
+            c.execute('''
+            UPDATE members SET tone=? WHERE name=? AND password=?
+            ''', values)
+            conn.commit()
+            conn.close()
+        else:
+            raise SoundException(
+                SoundError.SENT_RECORDING_AFTER_PROGRESS)
 
 
-def addRecordings(recording, memberName, tone):
-    if not memberName in members.keys():
-        raise SoundException(
-            SoundError.USERNAME_DOES_NOT_EXIST)
-    currentTone = members[memberName]
-    tonesOrder = Tone.compareTonesOrder(tone, currentTone)
-    outputPath = os.path.join(Data.recordingsFolderPath,memberName,tone)
-    # this is a repair of existing tone
-    if tonesOrder == -1:
-        SoundParser.splitSound(recording, outputPath)
-    elif tonesOrder == 0:
-        SoundParser.splitSound(recording, outputPath)
-        members[memberName] = Tone.nextTone(members[memberName])
-        rows = []
-        with open(Data.progressFilePath, 'r') as file:
-            rows = file.read().split('\n')
-        file.close()
-        newRows = []
-        for row in rows:
-            if row.split(',')[0] == memberName:
-                newRows.append(memberName+','+Tone.nextTone(row.split(',')[1]))
-            else:
-                newRows.append(row)
-        with open(Data.progressFilePath, 'w') as file:
-            for row in newRows[0:len(rows)-1]:
-                file.write(row+'\n')
-        file.close()
-    else:
-        raise SoundException(
-            SoundError.SENT_RECORDING_AFTER_PROGRESS)
+def getMemberBynameAndPassword(name, password):
+    conn = sqlite3.connect(progressFilePath)
+    c = conn.cursor()
+    values = (name,)
+    c.execute('''
+    SELECT * FROM members WHERE name=? AND password = ?
+    ''', values)
+    result = c.fetchone()
+    if result == None:
+        raise SoundException(SoundError.WRONG_USERNAME_OR_PASSWORD)
+    member = Member(result[0], result[1], result[2])
+    conn.close()
+    return member
+    

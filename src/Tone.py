@@ -1,40 +1,47 @@
 from SoundError import SoundError
 from SoundException import SoundException
 
-_tonesPath = '../settings/tones.txt'
-
-tones = []
+_tonesPath = '/home/danbinnun1/voicebot/settings/tones.txt'
+_tones = []
 with open(_tonesPath, 'r') as tonesFile:
-    tones = tonesFile.read().split(',')
+    _tones = tonesFile.read().split(',')
 tonesFile.close()
 
+class Tone:
+    def __init__(self, tone):
+        found=False
+        for i, letter in enumerate(_tones):
+            if letter==tone:
+                self.letter = tone
+                self.index=i
+                found=True
+                break
+        if not found:
+            raise SoundException(SoundError.TONE_DOES_NOT_EXIST)
+    
+    def finished(self):
+        return tones[-1] == self
 
-def firstTone():
-    return tones[0]
+    def __gt__(self, other):
+        return self.index > other.index
 
-# -1 means tone1 before tone2
-# 0 means they are equal
-# 1 means tone1 after tone2
+    def __ge__(self, other):
+        return self.index >= other.index
 
+    def __eq__(self, other):
+        return self.index == other.index
 
-def compareTonesOrder(tone1, tone2):
-    if tone1 == tone2:
-        return 0
-    for tone in tones:
-        if tone == tone1:
-            return -1
-        if tone == tone2:
-            return 1
+    def __lt__(self, other):
+        return self.index < other.index
 
+    def __le__(self, other):
+        return self.index <= other.index
 
-def nextTone(tone):
-    for i in range(0, len(tones)-1):
-        if (tones[i] == tone):
-            return tones[i+1]
-    raise SoundException(
-        SoundError.TONE_DOES_NOT_EXIST)
+    def next(self):
+        if self.finished():
+            raise SoundException(SoundError.TONE_DOES_NOT_EXIST)
+        return tones[self.index+1]
 
-
-# checks weather the current progress means 'done'
-def finishedRegisteration(tone):
-    return tone == tones[-1]
+    @staticmethod
+    def first():
+        return _tones[0]

@@ -1,4 +1,4 @@
-_vowelsPath = '../settings/vowels.txt'
+_vowelsPath = '/home/danbinnun1/voicebot/settings/vowels.txt'
 
 vowels = []
 with open(_vowelsPath, 'r') as vowelsFile:
