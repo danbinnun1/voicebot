@@ -24,11 +24,11 @@ class Member:
         if tone < self.tone:
             toneVowels = splitSound(recording)
             for i, vowelRecording in enumerate(toneVowels):
-                DALRecording.uploadVowelRecording(vowelRecording,self.name, tone, vowels[i])
+                DALRecording.uploadVowelRecording(vowelRecording,self.name, tone.letter, vowels[i])
         elif tone == self.tone:
             toneVowels = splitSound(recording)
             for i, vowelRecording in enumerate(toneVowels):
-                DALRecording.uploadVowelRecording(vowelRecording,self.name, tone, vowels[i])
+                DALRecording.uploadVowelRecording(vowelRecording,self.name, tone.letter, vowels[i])
             DALMember.updateUserProgress(self.tone.next(), self.name)
         else:
             raise SoundException(
@@ -57,12 +57,14 @@ class Member:
                 sentenceAudio += DALRecording.getVowelRecording(self.name, tone, vowel)
             i += 2
         return sentenceAudio
+    def zipTone(self, tone, outputpath):
+        DALMember.zipUserTone(self.name, tone, outputpath)
 
 
 def getMemberBynameAndPassword(username, password):
     if not DALMember.memberExists(username, password):
         raise SoundException(SoundError.WRONG_USERNAME_OR_PASSWORD)
-    return Member(username, password, Tone(DALMember.getMemberProgress(username)))
+    return Member(username, Tone(DALMember.getMemberProgress(username)))
 
 def getMemberByusername(username):
     if not DALMember.usernameExists(username):
