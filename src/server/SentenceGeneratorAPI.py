@@ -8,6 +8,7 @@ from pydub import AudioSegment
 import BL.Member
 from BL.Member import Member
 from BL.SoundError import SoundError
+import BL.BLconfig
 from flask import Flask, jsonify, send_from_directory, abort, render_template, request, redirect, send_file
 import uuid
 import os
@@ -75,19 +76,21 @@ def uploadRecording():
 
 @app.route('/members')
 def members():
-    return Member.members
+    return BL.Member.getAllMembers()
 
 
 @app.route('/members/<name>')
 def getProgress(name):
-    if (name in Member.members):
-        return str(Member.members[name])
-    return str(int(SoundError.USERNAME_DOES_NOT_EXIST))
+    try:
+        member=BL.Member.getMemberByusername(name)
+        return str(member.tone.letter)
+    except SoundException as e:
+       return str(int(e.errorCode))
 
 
 @app.route('/vowels')
 def getVowels():
-    return jsonify({'response': Vowel.vowels})
+    return str(BL.BLconfig.vowels)
 
 
 app.run(debug=True)
