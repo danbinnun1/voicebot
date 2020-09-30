@@ -1,35 +1,40 @@
+import sys
+sys.path.append('../')
+
+import BL.Data
+from BL.Tone import Tone
+from BL.SoundException import SoundException
+from pydub import AudioSegment
+import BL.Member
+from BL.Member import Member
+from BL.SoundError import SoundError
 from flask import Flask, jsonify, send_from_directory, abort, render_template, request, redirect, send_file
 import uuid
 import os
-import sys
-sys.path.append('../')
-from BL.SoundError import SoundError
-from BL.Member import Member
-import BL.Member
-from BL.SoundException import SoundException
-from BL.Tone import Tone
-import BL.Data
 
 BL.Data.initializeData()
 app = Flask(__name__)
+
 
 @app.route('/generate_sentence/<speakerUsername>/<sentence>')
 def sendSentenceRecording(speakerUsername, sentence):
     try:
         temporalName = uuid.uuid4().hex+".mp3"
-        speaker=BL.Member.getMemberByusername(speakerUsername)
-        sentenceAudio=speaker.generateSentence(sentence)
-        filename=uuid.uuid4().hex
-        data = send_file(sentenceAudio.raw_data, 'audio/mp3', as_attachment=True,attachment_filename=filename)
+        speaker = BL.Member.getMemberByusername(speakerUsername)
+        sentenceAudio = speaker.generateSentence(sentence)
+        filename = uuid.uuid4().hex
+        data = send_file(sentenceAudio.raw_data, 'audio/mp3',
+                         as_attachment=True, attachment_filename=filename)
         return data
     except SoundException as e:
         return str(int(e.errorCode))
 
+
 @app.route('/sign_up', methods=["POST", "GET"])
 def signMember():
-    if request.method=="POST":
+    if request.method == "POST":
         try:
-            newMember=Member(request.form["username"], Tone.first())
+            newMember = Member(request.form["username"], Tone.first())
             newMember.save(request.form["password"])
             return ""
         except SoundException as e:
@@ -42,31 +47,27 @@ def uploadRecording():
     print(request.url)
     if request.method == "POST":
         if request.files:
-            temporalName = uuid.uuid4().hex
             try:
+                recordingPath = uuid.uuid4().hex
                 recording = request.files["mp3"]
-                recording.save(os.path.join(
-                    Data.temporalRecordingsFolderPath, temporalName))
-                Member.addRecordings(
-                    os.path.join(Data.temporalRecordingsFolderPath, temporalName), request.form["name"], request.form["tone"])
-                userToneZipFileName = uuid.uuid4().hex+'.zip'
-                Data.zipUserTone(
-                    request.form["name"], request.form["tone"], os.path.join(Data.temporalRecordingsFolderPath, userToneZipFileName))
+                recording.save(recordingPath)
+                uploader = BL.Member.getMemberBynameAndPassword(
+                    request.form["name"], request.form["password"])
+                uploader.uploadSound(AudioSegment.from_file(
+                    recordingPath), Tone(request.form["tone"]))
+                zipfilePath = uuid.uuid4().hex+'.zip'
+                uploader.zipTone(request.form["tone"], zipfilePath)
                 data = send_file(
-                    os.path.join(Data.temporalRecordingsFolderPath,
-                                 userToneZipFileName),
+                    zipfilePath,
                     mimetype='zip',
-                    attachment_filename=userToneZipFileName,
+                    attachment_filename=zipfilePath,
                     as_attachment=True
                 )
-                os.remove(os.path.join(
-                    Data.temporalRecordingsFolderPath, userToneZipFileName))
-                os.remove(os.path.join(
-                    Data.temporalRecordingsFolderPath, temporalName))
+                os.remove(recordingPath)
+                os.remove(zipfilePath)
                 return data
             except SoundException as error:
-                os.remove(os.path.join(
-                    Data.temporalRecordingsFolderPath, temporalName))
+                os.remove(recordingPath)
                 return str(int(error.errorCode))
 
     return render_template('upload_sound.html')
