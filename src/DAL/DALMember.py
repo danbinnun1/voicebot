@@ -22,13 +22,6 @@ def usernameAvailable(username):
         ''', searchParameters).fetchone()
     return searchResult == None
 
-def uploadVowelRecording(recording, username, tone, vowel):
-    recording.export(
-        os.path.join(config.recordingsFolderPath,username,tone,vowel),
-        bitrate="192k",
-        format="mp3"
-    )
-
 def updateUserProgress(newTone, username):
     conn = sqlite3.connect(config.progressFilePath)
     c = conn.cursor()
@@ -38,3 +31,12 @@ def updateUserProgress(newTone, username):
         ''', values)
     conn.commit()
     conn.close()
+
+def memberExists(username, password):
+    conn = sqlite3.connect(config.progressFilePath)
+    c = conn.cursor()
+    searchParameters = (username, password,)
+    searchResult = c.execute('''
+        SELECT * FROM members WHERE name=? AND password=?
+        ''', searchParameters).fetchone()
+    return searchResult != None
