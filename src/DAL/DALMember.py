@@ -50,3 +50,12 @@ def zipUserTone(username, tone, outputPath):
             for file in files:
                 file_path = os.path.join(root, file)
                 zipf.write(file_path, file_path[len_dir_path:])
+
+def getMemberProgress(username):
+    conn = sqlite3.connect(config.progressFilePath)
+    c = conn.cursor()
+    searchParameters = (username,)
+    searchResult = c.execute('''
+        SELECT tone FROM members WHERE name=?
+        ''', searchParameters).fetchone()
+    return searchResult[1]

@@ -1,12 +1,13 @@
-import sqlite3
 from SoundError import SoundError
 from SoundException import SoundException
 from SoundParser import splitSound
 from Tone import Tone
-import Data
+from BL.BLconfig import tones
 import os
 from pydub import AudioSegment
-
+import DAL.DALMember as DALMember
+import DAL.DALRecording as DALRecording
+from Vowel import vowels
 
 class Member:
     def __init__(self, name, password, tone):
@@ -15,45 +16,25 @@ class Member:
         self.tone = tone
 
     def save(self):
-        conn = sqlite3.connect(Data.progressFilePath)
-        c = conn.cursor()
-        searchParameters = (self.name,)
-        searchResult = c.execute('''
-        SELECT * FROM members WHERE name=?
-        ''', searchParameters).fetchone()
-        if searchResult != None:
+        if not DALMember.usernameAvailable(self.name):
             raise SoundException(SoundError.USERNAME_TAKEN)
-        values = (self.name, self.__password, self.tone.letter,)
-        c.execute('''
-        INSERT INTO members (name, password, progress) VALUES (?,?,?)
-        ''', values)
-        conn.commit()
-        conn.close()
-        os.mkdir(os.path.join(Data.recordingsFolderPath,self.name))
+        DALMember.insertMember(self.name, self.__password, self.tone)
 
-    def uploadSound(self, filepath, tone):
+    def uploadSound(self, recording, tone):
         # this is a repair of existing tone
         if tone < self.tone:
-            SoundParser.splitSound(filepath, os.path.join(
-                Data.recordingsFolderPath, self.name, tone))
+            toneVowels = splitSound(recording)
+            for i, vowelRecording in enumerate(toneVowels):
+                DALRecording.uploadVowelRecording(vowelRecording,self.name, tone, vowels[i])
         elif tone == self.tone:
-            SoundParser.splitSound(filepath, os.path.join(
-                Data.recordingsFolderPath, self.name, tone))
-            self.tone = self.tone.next()
-            conn = sqlite3.connect(Data.progressFilePath)
-            c = conn.cursor()
-            values = (self.tone.letter, self.name, self.__password)
-            c.execute('''
-            UPDATE members SET tone=? WHERE name=? AND password=?
-            ''', values)
-            conn.commit()
-            conn.close()
+            toneVowels = splitSound(recording)
+            DALMember.updateUserProgress(self.tone.next(), self.name)
         else:
             raise SoundException(
                 SoundError.SENT_RECORDING_AFTER_PROGRESS)
 
-    def generateSentence(self, sentence, outputpath):
-        space=' '
+    def generateSentence(self, sentence):
+        space = ' '
         if not self.tone.finished():
             raise SoundException(
                 SoundError.USER_NOT_FINISHED_REGISTERETION)
@@ -68,31 +49,16 @@ class Member:
             vowel = syllable[1]
             if tone == space and vowel == space:
                 sentenceAudio = sentenceAudio+AudioSegment.silent(300)
-            elif not tone in Tone.tones or not vowel in Vowel.vowels:
+            elif not tone in tones or not vowel in vowels:
                 raise SoundException(
                     SoundError.INVALID_SENTENCE)
             else:
-                sentenceAudio = sentenceAudio + \
-                    AudioSegment.from_mp3(os.path.join(
-                        Data.recordingsFolderPath, speaker, tone, vowel) + '.mp3')
+                sentenceAudio += DALRecording.getVowelRecording(self.name, tone, vowel)
             i += 2
-        sentenceAudio.export(
-            outputPath,
-            bitrate="192k",
-            format="mp3"
-        )
+        return sentenceAudio
 
 
-def getMemberBynameAndPassword(name, password):
-    conn = sqlite3.connect(Data.progressFilePath)
-    c = conn.cursor()
-    values = (name,)
-    c.execute('''
-    SELECT * FROM members WHERE name=? AND password = ?
-    ''', values)
-    result = c.fetchone()
-    if result == None:
+def getMemberBynameAndPassword(username, password):
+    if not DALMember.memberExists(username, password):
         raise SoundException(SoundError.WRONG_USERNAME_OR_PASSWORD)
-    member = Member(result[0], result[1], result[2])
-    conn.close()
-    return member
+    return Member(username, password, DALMember.getMemberProgress(username))
