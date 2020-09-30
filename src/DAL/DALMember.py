@@ -14,7 +14,7 @@ def insertMember(name, password, tone):
     conn.close()
     os.mkdir(os.path.join(config.recordingsFolderPath, name))
 
-def usernameAvailable(username):
+def usernameExists(username):
     conn = sqlite3.connect(config.progressFilePath)
     c = conn.cursor()
     searchParameters = (username,)

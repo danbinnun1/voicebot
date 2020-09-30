@@ -1,29 +1,28 @@
-from SoundError import SoundError
+import sys
+sys.path.append('../')
+
+from BL.SoundError import SoundError
 from flask import Flask, jsonify, send_from_directory, abort, render_template, request, redirect, send_file
 import zipfile
-import Sentence
-import Data
 import uuid
 import os
-import Vowel
-import Member
-from SoundException import SoundException
-import Tone
+import BL.Member as Member
+from BL.SoundException import SoundException
+import BL.Tone
 app = Flask(__name__)
 
 
 @app.route('/generate_sentence/<speaker>/<sentence>')
-def sendSentenceRecording(speaker, sentence):
+def sendSentenceRecording(speakerUsername, sentence):
     temporalName = uuid.uuid4().hex+".mp3"
 
     try:
         print(sentence)
-        print(speaker)
-        Sentence.generateSentence(sentence, speaker, os.path.join(
-            Data.temporalRecordingsFolderPath, temporalName))
-        data = send_from_directory(
-            Data.temporalRecordingsFolderPath, temporalName, as_attachment=True)
-        os.remove(os.path.join(Data.temporalRecordingsFolderPath, temporalName))
+        print(speakerUsername)
+        speaker=Member.getMemberByusername(speakerUsername)
+        sentenceAudio=speaker.generateSentence(sentence)
+        filename=uuid.uuid4().hex
+        data = send_file(sentenceAudio.raw_data, 'audio/mp3', as_attachment=True,attachment_filename=filename)
         return data
     except SoundException as e:
         print(e.errorCode)

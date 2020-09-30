@@ -1,5 +1,5 @@
-from SoundError import SoundError
-from SoundException import SoundException
+from BL.SoundError import SoundError
+from BL.SoundException import SoundException
 import BL.BLconfig as config
 
 
