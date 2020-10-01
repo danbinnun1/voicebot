@@ -12,6 +12,8 @@ jobs:
           command: pip install --user flask
           name: install python dependencies
       - run: python3 -m pip install pytest-testconfig
+      - run: sudo apt install ffmpeg
+      - run: python3 -m pip install pydub
       - run: pytest
 
 workflows:
