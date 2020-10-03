@@ -1,13 +1,13 @@
-from BL.SoundError import SoundError
-from BL.SoundException import SoundException
-from BL.SoundParser import splitSound
-from BL.Tone import Tone
-from BL.BLconfig import tones
+from src.BL.SoundError import SoundError
+from src.BL.SoundException import SoundException
+from src.BL.SoundParser import splitSound
+from src.BL.Tone import Tone
+from src.BL.BLconfig import tones
 import os
 from pydub import AudioSegment
-import DAL.DALMember as DALMember
-import DAL.DALRecording as DALRecording
-from BL.BLconfig import vowels
+import src.DAL.DALMember as DALMember
+import src.DAL.DALRecording as DALRecording
+from src.BL.BLconfig import vowels
 
 class Member:
     def __init__(self, name, tone):
@@ -60,20 +60,22 @@ class Member:
     def zipTone(self, tone, outputpath):
         DALMember.zipUserTone(self.name, tone, outputpath)
 
+    @staticmethod
+    def getMemberBynameAndPassword(username, password):
+        if not DALMember.memberExists(username, password):
+            raise SoundException(SoundError.WRONG_USERNAME_OR_PASSWORD)
+        return Member(username, Tone(DALMember.getMemberProgress(username)))
 
-def getMemberBynameAndPassword(username, password):
-    if not DALMember.memberExists(username, password):
-        raise SoundException(SoundError.WRONG_USERNAME_OR_PASSWORD)
-    return Member(username, Tone(DALMember.getMemberProgress(username)))
+    @staticmethod
+    def getMemberByusername(username):
+        if not DALMember.usernameExists(username):
+            raise SoundException(SoundError.USERNAME_DOES_NOT_EXIST)
+        return Member(username, Tone(DALMember.getMemberProgress(username)))
 
-def getMemberByusername(username):
-    if not DALMember.usernameExists(username):
-        raise SoundException(SoundError.USERNAME_DOES_NOT_EXIST)
-    return Member(username, Tone(DALMember.getMemberProgress(username)))
-
-def getAllMembers():
-    rows=DALMember.getAllMembers()
-    members = {}
-    for row in rows:
-        members[row[0]] = row[1]
-    return members
+    @staticmethod
+    def getAllMembers():
+        rows=DALMember.getAllMembers()
+        members = {}
+        for row in rows:
+            members[row[0]] = row[1]
+        return members

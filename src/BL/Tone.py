@@ -1,6 +1,6 @@
-from BL.SoundError import SoundError
-from BL.SoundException import SoundException
-import BL.BLconfig as config
+from src.BL.SoundError import SoundError
+from src.BL.SoundException import SoundException
+import src.BL.BLconfig as config
 
 
 class Tone:

@@ -1,8 +1,8 @@
 
 from pydub.silence import split_on_silence
-from BL.SoundError import SoundError
-from BL.SoundException import SoundException
-from BL.BLconfig import vowels
+from src.BL.SoundError import SoundError
+from src.BL.SoundException import SoundException
+from src.BL.BLconfig import vowels
 
 def _match_target_amplitude(aChunk, target_dBFS):
     ''' Normalize given audio chunk '''

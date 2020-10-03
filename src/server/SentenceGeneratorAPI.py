@@ -1,19 +1,19 @@
 import sys
-sys.path.append('../')
+sys.path.append('.')
 
-import BL.Data
-from BL.Tone import Tone
-from BL.SoundException import SoundException
+from src.BL import Data
+from src.BL.Tone import Tone
+from src.BL.SoundException import SoundException
 from pydub import AudioSegment
-import BL.Member
-from BL.Member import Member
-from BL.SoundError import SoundError
-import BL.BLconfig
-from flask import Flask, jsonify, send_from_directory, abort, render_template, request, redirect, send_file
+from src.BL import Member
+from src.BL.Member import Member
+from src.BL.SoundError import SoundError
+import src.BL.BLconfig as config
+from flask import Flask, jsonify, send_from_directory, abort, render_template, request, redirect, send_file, safe_join
 import uuid
 import os
 
-BL.Data.initializeData()
+Data.initializeData()
 app = Flask(__name__)
 
 
@@ -21,7 +21,7 @@ app = Flask(__name__)
 def sendSentenceRecording(speakerUsername, sentence):
     try:
         temporalName = uuid.uuid4().hex+".mp3"
-        speaker = BL.Member.getMemberByusername(speakerUsername)
+        speaker = Member.getMemberByusername(speakerUsername)
         sentenceAudio = speaker.generateSentence(sentence)
         filename = uuid.uuid4().hex
         data = send_file(sentenceAudio.raw_data, 'audio/mp3',
@@ -52,14 +52,14 @@ def uploadRecording():
                 recordingPath = uuid.uuid4().hex
                 recording = request.files["mp3"]
                 recording.save(recordingPath)
-                uploader = BL.Member.getMemberBynameAndPassword(
+                uploader = Member.getMemberBynameAndPassword(
                     request.form["name"], request.form["password"])
                 uploader.uploadSound(AudioSegment.from_file(
                     recordingPath), Tone(request.form["tone"]))
                 zipfilePath = uuid.uuid4().hex+'.zip'
                 uploader.zipTone(request.form["tone"], zipfilePath)
                 data = send_file(
-                    zipfilePath,
+                    '../../'+zipfilePath,
                     mimetype='zip',
                     attachment_filename=zipfilePath,
                     as_attachment=True
@@ -76,13 +76,13 @@ def uploadRecording():
 
 @app.route('/members')
 def members():
-    return BL.Member.getAllMembers()
+    return Member.getAllMembers()
 
 
 @app.route('/members/<name>')
 def getProgress(name):
     try:
-        member=BL.Member.getMemberByusername(name)
+        member=Member.getMemberByusername(name)
         return str(member.tone.letter)
     except SoundException as e:
        return str(int(e.errorCode))
@@ -90,7 +90,7 @@ def getProgress(name):
 
 @app.route('/vowels')
 def getVowels():
-    return str(BL.BLconfig.vowels)
+    return str(config.vowels)
 
 
 app.run(debug=True)

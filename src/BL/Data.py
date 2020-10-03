@@ -1,3 +1,3 @@
-import DAL.Data
+from src.DAL import Data
 def initializeData():
-    DAL.Data.initializeData()
+    Data.initializeData()

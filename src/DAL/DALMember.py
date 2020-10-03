@@ -23,6 +23,7 @@ def usernameExists(username):
     searchResult = c.execute('''
         SELECT * FROM members WHERE name=?
         ''', searchParameters).fetchone()
+    conn.close()
     return searchResult != None
 
 
@@ -44,6 +45,7 @@ def memberExists(username, password):
     searchResult = c.execute('''
         SELECT * FROM members WHERE name=? AND password=?
         ''', searchParameters).fetchone()
+    conn.close()
     return searchResult != None
 
 
@@ -64,6 +66,7 @@ def getMemberProgress(username):
     searchResult = c.execute('''
         SELECT progress FROM members WHERE name=?
         ''', searchParameters).fetchone()
+    conn.close()
     return searchResult[0]
 
 
@@ -73,4 +76,5 @@ def getAllMembers():
     searchResult = c.execute('''
         SELECT * FROM members
         ''').fetchall()
+    conn.close()
     return searchResult
