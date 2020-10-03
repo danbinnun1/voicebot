@@ -83,7 +83,7 @@ def members():
 def getProgress(name):
     try:
         member=Member.getMemberByusername(name)
-        return str(member.tone.letter)
+        return str(member.__tone.letter)
     except SoundException as e:
        return str(int(e.errorCode))
 

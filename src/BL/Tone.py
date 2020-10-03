@@ -40,4 +40,4 @@ class Tone:
 
     @staticmethod
     def first():
-        return config.tones[0]
+        return Tone(config.tones[0])

@@ -1,7 +1,7 @@
 import os
 import shutil
 import sys
-sys.path.append('..')
+sys.path.append('.')
 from src.DAL import DALMember, Data, DALRecording
 from pydub import AudioSegment
 
@@ -32,7 +32,7 @@ def test_recordings():
     DALMember.insertMember('dan','123','a')
     vowels=['a','e','i','o','u','.']
     for vowel in vowels:
-        DALRecording.uploadVowelRecording(AudioSegment.from_mp3(os.path.join('./tests/testsData/input/a', vowel+'.mp3')),'dan','a',vowel)
+        DALRecording.uploadVowelRecording(AudioSegment.from_mp3(os.path.join('./tests/DALtests/testsData/input/a', vowel+'.mp3')),'dan','a',vowel)
 
     for vowel in vowels:
-        assert(AudioSegment.from_file(os.path.join('./tests/testsData/expectedresult/a', vowel+'.mp3')).raw_data==DALRecording.getVowelRecording('dan','a',vowel).raw_data)
+        assert(AudioSegment.from_file(os.path.join('./tests/DALtests/testsData/expectedresult/a', vowel+'.mp3')).raw_data==DALRecording.getVowelRecording('dan','a',vowel).raw_data)

@@ -12,36 +12,36 @@ from src.BL.SentenceGenerator import generateSentence
 
 class Member:
     def __init__(self, name, tone):
-        self.name = name
-        self.tone = tone
+        self.__name = name
+        self.__tone = tone
 
     def save(self, password):
-        if DALMember.usernameExists(self.name):
+        if DALMember.usernameExists(self.__name):
             raise SoundException(SoundError.USERNAME_TAKEN)
-        DALMember.insertMember(self.name, password, self.tone)
+        DALMember.insertMember(self.__name, password, self.__tone.letter)
 
     def uploadSound(self, recording, tone):
         # this is a repair of existing tone
-        if tone < self.tone:
+        if tone < self.__tone:
             toneVowels = splitSound(recording)
             for i, vowelRecording in enumerate(toneVowels):
-                DALRecording.uploadVowelRecording(vowelRecording,self.name, tone.letter, vowels[i])
-        elif tone == self.tone:
+                DALRecording.uploadVowelRecording(vowelRecording,self.__name, tone.letter, vowels[i])
+        elif tone == self.__tone:
             toneVowels = splitSound(recording)
             for i, vowelRecording in enumerate(toneVowels):
-                DALRecording.uploadVowelRecording(vowelRecording,self.name, tone.letter, vowels[i])
-            DALMember.updateUserProgress(self.tone.next(), self.name)
+                DALRecording.uploadVowelRecording(vowelRecording,self.__name, tone.letter, vowels[i])
+            DALMember.updateUserProgress(self.__tone.next(), self.__name)
         else:
             raise SoundException(
                 SoundError.SENT_RECORDING_AFTER_PROGRESS)
 
     def generateSentence(self, sentence):
-        if not self.tone.finished():
+        if not self.__tone.finished():
             raise SoundException(
                 SoundError.USER_NOT_FINISHED_REGISTERETION)
-        return generateSentence(self.name, sentence)
+        return generateSentence(self.__name, sentence)
     def zipTone(self, tone, outputpath):
-        DALMember.zipUserTone(self.name, tone, outputpath)
+        DALMember.zipUserTone(self.__name, __tone.tone, outputpath)
 
     @staticmethod
     def getMemberBynameAndPassword(username, password):
@@ -62,3 +62,7 @@ class Member:
         for row in rows:
             members[row[0]] = row[1]
         return members
+
+    @staticmethod
+    def initializeMember(name):
+        return Member(name, Tone.first())
