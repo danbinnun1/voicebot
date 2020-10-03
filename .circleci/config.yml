@@ -9,11 +9,9 @@ jobs:
     steps:
       - checkout
       - run:
-          command: pip install --user flask
+          command: pip install --user -r .circleci/requirements.txt
           name: install python dependencies
-      - run: python3 -m pip install pytest-testconfig
       - run: sudo apt install ffmpeg
-      - run: python3 -m pip install pydub
       - run: pytest
 
 workflows:
