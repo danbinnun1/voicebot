@@ -57,6 +57,7 @@ def zipUserTone(username, tone, outputPath):
             for file in files:
                 file_path = os.path.join(root, file)
                 zipf.write(file_path, file_path[len_dir_path:])
+    zipf.close()
 
 
 def getMemberProgress(username):

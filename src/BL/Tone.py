@@ -16,7 +16,7 @@ class Tone:
             raise SoundException(SoundError.TONE_DOES_NOT_EXIST)
 
     def finished(self):
-        return config.tones[-1] == self
+        return config.tones[-1] == self.letter
 
     def __gt__(self, other):
         return self.index > other.index
@@ -36,7 +36,7 @@ class Tone:
     def next(self):
         if self.finished():
             raise SoundException(SoundError.TONE_DOES_NOT_EXIST)
-        return config.tones[self.index+1]
+        return Tone(config.tones[self.index+1])
 
     @staticmethod
     def first():

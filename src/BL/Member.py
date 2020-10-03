@@ -30,7 +30,8 @@ class Member:
             toneVowels = splitSound(recording)
             for i, vowelRecording in enumerate(toneVowels):
                 DALRecording.uploadVowelRecording(vowelRecording,self.__name, tone.letter, vowels[i])
-            DALMember.updateUserProgress(self.__tone.next(), self.__name)
+            self.__tone=self.__tone.next()
+            DALMember.updateUserProgress(self.__tone.letter, self.__name)
         else:
             raise SoundException(
                 SoundError.SENT_RECORDING_AFTER_PROGRESS)
