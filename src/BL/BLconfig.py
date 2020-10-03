@@ -1,5 +1,5 @@
-_vowelsPath = '/home/danbinnun1/voicebot/settings/vowels.txt'
-_tonesPath = '/home/danbinnun1/voicebot/settings/tones.txt'
+_vowelsPath = './settings/vowels.txt'
+_tonesPath = './settings/tones.txt'
 
 with open(_vowelsPath, 'r') as vowelsFile:
     vowels = vowelsFile.read().split(',')
