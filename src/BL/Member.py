@@ -8,6 +8,7 @@ from pydub import AudioSegment
 import src.DAL.DALMember as DALMember
 import src.DAL.DALRecording as DALRecording
 from src.BL.BLconfig import vowels
+from src.BL.SentenceGenerator import generateSentence
 
 class Member:
     def __init__(self, name, tone):
@@ -35,28 +36,10 @@ class Member:
                 SoundError.SENT_RECORDING_AFTER_PROGRESS)
 
     def generateSentence(self, sentence):
-        space = ' '
         if not self.tone.finished():
             raise SoundException(
                 SoundError.USER_NOT_FINISHED_REGISTERETION)
-        if len(sentence) % 2 == 1:
-            raise SoundException(
-                SoundError.INVALID_SENTENCE)
-        i = 0
-        sentenceAudio = AudioSegment.silent(0)
-        while i < len(sentence):
-            syllable = sentence[i:i+2]
-            tone = syllable[0]
-            vowel = syllable[1]
-            if tone == space and vowel == space:
-                sentenceAudio = sentenceAudio+AudioSegment.silent(300)
-            elif not tone in tones or not vowel in vowels:
-                raise SoundException(
-                    SoundError.INVALID_SENTENCE)
-            else:
-                sentenceAudio += DALRecording.getVowelRecording(self.name, tone, vowel)
-            i += 2
-        return sentenceAudio
+        return generateSentence(self.name, sentence)
     def zipTone(self, tone, outputpath):
         DALMember.zipUserTone(self.name, tone, outputpath)
 
