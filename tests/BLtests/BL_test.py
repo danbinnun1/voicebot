@@ -14,3 +14,5 @@ def test_bl():
     member=Member.initializeMember('dan')
     member.save('123')
     member.uploadSound(AudioSegment.from_file('./tests/BLtests/testsData/Recording (5).m4a'), Tone('a'))
+    member.zipTone(Tone('a'), 'a.zip')
+    os.remove('a.zip')

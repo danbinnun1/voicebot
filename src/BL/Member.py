@@ -41,7 +41,7 @@ class Member:
                 SoundError.USER_NOT_FINISHED_REGISTERETION)
         return generateSentence(self.__name, sentence)
     def zipTone(self, tone, outputpath):
-        DALMember.zipUserTone(self.__name, __tone.tone, outputpath)
+        DALMember.zipUserTone(self.__name, self.__tone.letter, outputpath)
 
     @staticmethod
     def getMemberBynameAndPassword(username, password):
