@@ -2,7 +2,6 @@ import sys
 sys.path.append('.')
 
 from src.BL import Data
-from src.BL.Tone import Tone
 from src.BL.SoundException import SoundException
 from pydub import AudioSegment
 from src.BL import Member
@@ -35,8 +34,7 @@ def sendSentenceRecording(speakerUsername, sentence):
 def signMember():
     if request.method == "POST":
         try:
-            newMember = Member(request.form["username"], Tone.first())
-            newMember.save(request.form["password"])
+            newMember=Member.initializeMember(request.form["username"], request.form["password"])
             return ""
         except SoundException as e:
             return str(int(e.errorCode))
@@ -55,7 +53,7 @@ def uploadRecording():
                 uploader = Member.getMemberBynameAndPassword(
                     request.form["name"], request.form["password"])
                 uploader.uploadSound(AudioSegment.from_file(
-                    recordingPath), Tone(request.form["tone"]))
+                    recordingPath), request.form["tone"])
                 zipfilePath = uuid.uuid4().hex+'.zip'
                 uploader.zipTone(request.form["tone"], zipfilePath)
                 data = send_file(
