@@ -20,7 +20,8 @@ class Member:
             raise SoundException(SoundError.USERNAME_TAKEN)
         DALMember.insertMember(self.__name, password, self.__tone.letter)
 
-    def uploadSound(self, recording, tone):
+    def uploadSound(self, recording, letter):
+        tone=Tone(letter)
         # this is a repair of existing tone
         if tone < self.__tone:
             toneVowels = splitSound(recording)
@@ -65,5 +66,9 @@ class Member:
         return members
 
     @staticmethod
-    def initializeMember(name):
-        return Member(name, Tone.first())
+    def initializeMember(name, password):
+        member = Member(name, Tone.first())
+        if DALMember.usernameExists(name):
+            raise SoundException(SoundError.USERNAME_TAKEN)
+        DALMember.insertMember(name, password, member.__tone.letter)
+        return member

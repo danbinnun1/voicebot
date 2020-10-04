@@ -8,51 +8,51 @@ from src.BL import Data, SentenceGenerator
 from src.BL.SoundError import SoundError
 from src.BL.SoundException import SoundException
 from src.BL.Tone import Tone
+from src.BL.BLconfig import tones, vowels
 import filecmp
 
 def test_bl():
     if os.path.isdir('./data'):
         shutil.rmtree('./data')
     Data.initializeData()
-    tones=open('settings/tones.txt','r').read()
-    with open('settings/tones.txt','w') as tonesFile:
-        tonesFile.write('a,b,#')
-    tonesFile.close()
+    
 
-    member1=Member.initializeMember('dan')
-    member1.save('123')
+    member1=Member.initializeMember('jhg', 'fff')
     recording=AudioSegment.from_file('./tests/BLtests/testsData/Recording (5).m4a')
-    member1.uploadSound(recording, Tone('a'))
-    member1.zipTone(Tone('a'), 'a.zip')
+    member1.uploadSound(recording, '_')
+    member1.zipTone('_', 'a.zip')
+    assert(filecmp.cmp('a.zip','tests/BLtests/testsData/a.zip'))
     os.remove('a.zip')
-    member1.uploadSound(recording,Tone('b'))
-    heni=Member.initializeMember('heni')
-    heni.save('12')
+    member1.uploadSound(recording,'b')
+    for tone in tones[:-1]:
+        member1.uploadSound(recording,tone)
+    heni=Member.initializeMember('heni','123')
     exceptionThrown=False
     try:
-        heni.uploadSound(recording, Tone('b'))
+        heni.uploadSound(recording, 'b')
     except SoundException as e:
         if (e.errorCode==SoundError.SENT_RECORDING_AFTER_PROGRESS):
             exceptionThrown=True
     assert(exceptionThrown)
     exceptionThrown=False
-    heni.uploadSound(recording, Tone('a'))
-    heni.uploadSound(recording, Tone('a'))
-    heni.uploadSound(recording, Tone('b'))
-    heni.uploadSound(recording, Tone('a'))
+    heni.uploadSound(recording, '_')
+    heni.uploadSound(recording, '_')
+    heni.uploadSound(recording, 'b')
+    heni.uploadSound(recording, '_')
+    for tone in tones[:-1]:
+        heni.uploadSound(recording,tone)
     heni.generateSentence('aa')
     try:
-        heni.uploadSound(recording, Tone('c'))
+        heni.uploadSound(recording, 'c')
     except SoundException as e:
         if e.errorCode==SoundError.TONE_DOES_NOT_EXIST:
             exceptionThrown=True
     assert(exceptionThrown)
     exceptionThrown=False
-    hapanter=Member.getMemberBynameAndPassword('heni','12')
+    hapanter=Member.getMemberBynameAndPassword('heni','123')
     hapanter.generateSentence('aa')
-    kush=Member.initializeMember('kush')
-    kush.save('63')
-    kush.uploadSound(recording,Tone('a'))
+    kush=Member.initializeMember('kush','63')
+    kush.uploadSound(recording,'_')
     kush2=Member.getMemberBynameAndPassword('kush','63')
     try:
         kush2.generateSentence('aa')
@@ -61,9 +61,8 @@ def test_bl():
             exceptionThrown=True
     assert(exceptionThrown)
     exceptionThrown=False
-    kush2.uploadSound(recording,Tone('b'))
+    kush2.uploadSound(recording,'b')
     kush=Member.getMemberByusername('kush')
-    kush.generateSentence('aa')
     try:
         Member.getMemberBynameAndPassword('kush','123')
     except SoundException as e:
@@ -77,6 +76,4 @@ def test_bl():
         if e.errorCode==SoundError.USERNAME_DOES_NOT_EXIST:
             exceptionThrown=True
     assert(exceptionThrown)
-    with open('settings/tones.txt','w') as tonesFile:
-        tonesFile.write(tones)
-    tonesFile.close()
+    
