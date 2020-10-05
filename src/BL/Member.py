@@ -2,14 +2,15 @@ from src.BL.SoundError import SoundError
 from src.BL.SoundException import SoundException
 from src.BL.SoundParser import splitSound
 from src.BL.Tone import Tone
-from src.BL.BLconfig import tones
 import os
 from pydub import AudioSegment
 import src.DAL.DALMember as DALMember
 import src.DAL.DALRecording as DALRecording
-from src.BL.BLconfig import vowels
+from src.BL.BLconfig import BLconfig
 from src.BL.SentenceGenerator import generateSentence
 
+vowels=BLconfig.getVowels()
+tones=BLconfig.getTones()
 class Member:
     def __init__(self, name, tone):
         self.__name = name

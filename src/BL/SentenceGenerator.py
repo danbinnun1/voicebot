@@ -2,11 +2,13 @@ import sys
 sys.path.append('.')
 
 from src.DAL.DALRecording import getVowelRecording
-from src.BL.BLconfig import tones, vowels
+from src.BL.BLconfig import BLconfig
 from pydub import AudioSegment
 from src.BL.SoundException import SoundException
 from src.BL.SoundError import SoundError
 
+vowels=BLconfig.getVowels()
+tones=BLconfig.getTones()
 
 def generateSentence(name, sentence):
     space = ' '
