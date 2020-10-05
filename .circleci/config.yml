@@ -12,6 +12,7 @@ jobs:
           command: pip install --user -r .circleci/requirements.txt
           name: install python dependencies
       - run: sudo apt install ffmpeg
+      - run: echo "_,b,ch,#" > "settings/tones.txt"
       - run: pytest
 
 workflows:

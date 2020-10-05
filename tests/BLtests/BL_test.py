@@ -15,14 +15,6 @@ def test_bl():
     if os.path.isdir('./data'):
         shutil.rmtree('./data')
     Data.initializeData()
-    
-    tonesData=''
-    with open('./settings/tones.txt', 'r') as settings:
-        tonesData=settings.read()
-        settings.close()
-    with open('./settings/tones.txt', 'w') as settings:        
-        settings.write('_,b,ch,#')
-        settings.close()
 
     tones=BLconfig.getTones()
     vowels=BLconfig.getVowels()
