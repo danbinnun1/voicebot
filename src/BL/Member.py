@@ -16,10 +16,8 @@ class Member:
         self.__name = name
         self.__tone = tone
 
-    def save(self, password):
-        if DALMember.usernameExists(self.__name):
-            raise SoundException(SoundError.USERNAME_TAKEN)
-        DALMember.insertMember(self.__name, password, self.__tone.letter)
+    def getProgress(self):
+        return self.__tone.letter
 
     def uploadSound(self, recording, letter):
         tone=Tone(letter)

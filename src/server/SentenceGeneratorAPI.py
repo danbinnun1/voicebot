@@ -1,16 +1,18 @@
 import sys
 sys.path.append('.')
 
-from src.BL import Data
-from src.BL.SoundException import SoundException
-from pydub import AudioSegment
-from src.BL import Member
-from src.BL.Member import Member
-from src.BL.SoundError import SoundError
-import src.BL.BLconfig as config
-from flask import Flask, jsonify, send_from_directory, abort, render_template, request, redirect, send_file, safe_join
-import uuid
 import os
+import uuid
+from flask import Flask, jsonify, send_from_directory, abort, render_template, request, redirect, send_file, safe_join
+import src.BL.BLconfig as config
+from src.BL.SoundError import SoundError
+from src.BL.Member import Member
+from pydub import AudioSegment
+from src.BL.SoundException import SoundException
+from src.BL import Data
+import sys
+sys.path.append('.')
+
 
 Data.initializeData()
 app = Flask(__name__)
@@ -22,9 +24,15 @@ def sendSentenceRecording(speakerUsername, sentence):
         temporalName = uuid.uuid4().hex+".mp3"
         speaker = Member.getMemberByusername(speakerUsername)
         sentenceAudio = speaker.generateSentence(sentence)
-        filename = uuid.uuid4().hex
-        data = send_file(sentenceAudio.raw_data, 'audio/mp3',
-                         as_attachment=True, attachment_filename=filename)
+        filename = uuid.uuid4().hex+'.mp3'
+        sentenceAudio.export(
+            filename,
+            bitrate="192k",
+            format="mp3"
+        )
+        data = send_from_directory('../..', filename,
+                                   as_attachment=True)
+        os.remove(filename)
         return data
     except SoundException as e:
         return str(int(e.errorCode))
@@ -34,7 +42,8 @@ def sendSentenceRecording(speakerUsername, sentence):
 def signMember():
     if request.method == "POST":
         try:
-            newMember=Member.initializeMember(request.form["username"], request.form["password"])
+            newMember = Member.initializeMember(
+                request.form["username"], request.form["password"])
             return ""
         except SoundException as e:
             return str(int(e.errorCode))
@@ -80,10 +89,10 @@ def members():
 @app.route('/members/<name>')
 def getProgress(name):
     try:
-        member=Member.getMemberByusername(name)
-        return str(member.__tone.letter)
+        member = Member.getMemberByusername(name)
+        return str(member.getProgress())
     except SoundException as e:
-       return str(int(e.errorCode))
+        return str(int(e.errorCode))
 
 
 @app.route('/vowels')
