@@ -81,5 +81,18 @@ def test_bl():
         if e.errorCode==SoundError.USERNAME_DOES_NOT_EXIST:
             exceptionThrown=True
     assert(exceptionThrown)
+    exceptionThrown=False
 
+    invalidSentences=["123", "c hob", "ahchb", "tkj", "aaaaaa bc"]
+    for sentence in invalidSentences:
+        try:
+            heni.generateSentence(sentence)
+        except SoundException as e:
+            if e.errorCode==SoundError.INVALID_SENTENCE:
+                exceptionThrown=True
+        assert(exceptionThrown)
+        exceptionThrown=False
     
+    validSentences=["aachbo", "cheb b", "aaebi bechcho", "biiou chbech"]
+    for sentence in validSentences:
+        heni.generateSentence(sentence)
