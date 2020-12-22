@@ -48,4 +48,4 @@ Example: `GET /members/heni`
 ### ✅ Sentence format:
 `(<tone><vowel>)(<tone><vowel>)(<tone><vowel>)....`
 example:
-`kakipipitusik.bul.bul.`
+`shalom lachem`
